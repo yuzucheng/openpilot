@@ -19,6 +19,154 @@ from openpilot.common.swaglog import cloudlog, add_file_handler
 from openpilot.system.version import get_build_metadata, terms_version, training_version
 from openpilot.system.hardware.hw import Paths
 
+def get_default_params():
+  default_params : list[tuple[str, str | bytes]] = [
+    # kans
+    ("LongPitch", "1"),
+    ("EVTable", "1"),
+    ("CompletedTrainingVersion", "0"),
+    ("DisengageOnAccelerator", "0"),
+    ("GsmMetered", "1"),
+    ("HasAcceptedTerms", "0"),
+    ("LanguageSetting", "main_en"),
+    ("OpenpilotEnabledToggle", "1"),
+    ("LongitudinalPersonality", str(log.LongitudinalPersonality.standard)),
+
+    ("SearchInput", "0"),
+    ("GMapKey", "0"),
+    ("MapboxStyle", "0"),    
+
+
+    ("LongitudinalPersonalityMax", "3"),
+    ("ShowDebugUI", "0"),
+    ("ShowDateTime", "1"),
+    ("ShowPathEnd", "1"),
+    ("ShowCustomBrightness", "100"),
+    ("ShowLaneInfo", "1"),
+    ("ShowRadarInfo", "1"),
+    ("ShowRouteInfo", "1"),
+    ("ShowPathMode", "9"),
+    ("ShowPathColor", "13"),
+    ("ShowPathModeCruiseOff", "0"),
+    ("ShowPathColorCruiseOff", "19"),
+    ("ShowPathModeLane", "14"),
+    ("ShowPathColorLane", "13"),
+    ("ShowPlotMode", "0"),
+    ("AutoCruiseControl", "0"),
+    ("CruiseEcoControl", "2"),
+    ("AutoGasTokSpeed", "0"),
+    ("AutoGasSyncSpeed", "1"),
+    ("AutoEngage", "0"),
+    ("DisableMinSteerSpeed", "0"),
+    ("SoftHoldMode", "0"),
+
+    ("AutoSpeedUptoRoadSpeedLimit", "0"),
+    ("AutoRoadSpeedAdjust", "50"),
+    ("AutoCurveSpeedLowerLimit", "30"),
+    ("AutoCurveSpeedFactor", "120"),
+    ("AutoCurveSpeedAggressiveness", "100"),
+
+    ("AutoTurnControl", "0"),
+    ("AutoTurnControlSpeedTurn", "20"),
+    ("AutoTurnControlTurnEnd", "6"),
+    ("GpsDelayTimeAdjust", "200"),
+    ("AutoTurnMapChange", "0"),
+
+    ("AutoNaviSpeedCtrlEnd", "7"),
+    ("AutoNaviSpeedBumpTime", "1"),
+    ("AutoNaviSpeedBumpSpeed", "35"),
+    ("AutoNaviSpeedSafetyFactor", "105"),
+    ("AutoNaviSpeedDecelRate", "120"),
+    ("AutoNaviCountDownMode", "2"),
+    ("TurnSpeedControlMode", "1"),
+    ("MapTurnSpeedFactor", "90"),
+    ("StoppingAccel", "0"),
+    ("StopDistanceCarrot", "550"),
+    ("ComfortBrake", "240"),
+    ("CruiseButtonMode", "2"),
+    ("CruiseButtonTest1", "8"),
+    ("CruiseButtonTest2", "30"),
+    ("CruiseButtonTest3", "1"),
+    ("CruiseSpeedUnit", "10"),
+    ("MyDrivingMode", "3"),
+    ("MyDrivingModeAuto", "0"),
+    ("TrafficLightDetectMode", "2"),
+    ("CruiseMaxVals1", "200"),
+    ("CruiseMaxVals2", "160"),
+    ("CruiseMaxVals3", "130"),
+    ("CruiseMaxVals4", "110"),
+    ("CruiseMaxVals5", "95"),
+    ("CruiseMaxVals6", "80"),
+    ("LongTuningKpV", "100"),
+    ("LongTuningKiV", "0"),
+    ("LongTuningKf", "100"),
+    ("LongActuatorDelay", "20"),
+    ("RadarReactionFactor", "10"),
+    ("EnableRadarTracks", "0"),
+    ("HyundaiCameraSCC", "0"),
+    ("CanfdHDA2", "0"),
+    ("CanfdDebug", "0"),
+    ("SoundVolumeAdjust", "100"),
+    ("SoundVolumeAdjustEngage", "10"),
+    ("TFollowGap1", "110"),
+    ("TFollowGap2", "120"),
+    ("TFollowGap3", "140"),
+    ("TFollowGap4", "160"),
+    ("DynamicTFollow", "0"),
+    ("DynamicTFollowLC", "100"),
+    ("HapticFeedbackWhenSpeedCamera", "0"),
+    ("UseLaneLineSpeed", "0"),
+    ("UseLaneLineCurveSpeed", "0"),
+    ("UseLaneLineSpeedApply", "0"),
+    ("AdjustLaneOffset", "0"),
+    ("AdjustCurveOffset", "0"),
+    ("AdjustLaneTime", "13"),
+    ("LaneChangeNeedTorque", "0"),
+    ("MaxAngleFrames", "89"),
+    ("CarrotLatControl", "0"),
+    ("DampingFactor", "0"),
+    ("LateralTorqueCustom", "0"),
+    ("LateralTorqueAccelFactor", "2500"),
+    ("LateralTorqueFriction", "100"),
+    ("LateralTorqueKd", "0"),
+    ("LatMpcPathCost", "100"),
+    ("LatMpcMotionCost", "11"),
+    ("LatMpcAccelCost", "0"),
+    ("LatMpcJerkCost", "4"),
+    ("LatMpcSteeringRateCost", "700"),
+    ("CustomSteerMax", "0"),
+    ("CustomSteerDeltaUp", "0"),
+    ("CustomSteerDeltaDown", "0"),
+    ("SpeedFromPCM", "2"),
+    ("SteerActuatorDelay", "30"),
+    ("ModelActuatorDelay", "20"),
+    ("MaxTimeOffroadMin", "60"),
+    ("DisableDM", "0"),
+    ("CruiseOnDist", "400"),
+    ("HotspotOnBoot", "0"),
+    ("CustomSR", "0"),
+    ("SteerRatioRate", "100"),
+  ]
+  return default_params
+
+def set_default_params():
+  params = Params()
+  default_params = get_default_params()
+  try:
+    default_params.remove(("GMapKey", "0"))
+    default_params.remove(("CompletedTrainingVersion", "0"))
+    default_params.remove(("LanguageSetting", "main_en"))
+    default_params.remove(("GsmMetered", "1"))
+  except ValueError:
+    pass
+  for k, v in default_params:
+    params.put(k, v)
+    print(f"SetToDefault[{k}]={v}")
+
+def get_default_params_key():
+  default_params = get_default_params()
+  all_keys = [key for key, _ in default_params]
+  return all_keys
 
 def manager_init() -> None:
   save_bootlog()
@@ -32,15 +180,7 @@ def manager_init() -> None:
   if build_metadata.release_channel:
     params.clear_all(ParamKeyType.DEVELOPMENT_ONLY)
 
-  default_params: list[tuple[str, str | bytes]] = [
-    ("CompletedTrainingVersion", "0"),
-    ("DisengageOnAccelerator", "0"),
-    ("GsmMetered", "1"),
-    ("HasAcceptedTerms", "0"),
-    ("LanguageSetting", "main_en"),
-    ("OpenpilotEnabledToggle", "1"),
-    ("LongitudinalPersonality", str(log.LongitudinalPersonality.standard)),
-  ]
+  default_params = get_default_params()
 
   if params.get_bool("RecordFrontLock"):
     params.put_bool("RecordFront", True)
@@ -132,6 +272,8 @@ def manager_thread() -> None:
   write_onroad_params(False, params)
   ensure_running(managed_processes.values(), False, params=params, CP=sm['carParams'], not_run=ignore)
 
+  print_timer = 0
+
   started_prev = False
 
   while True:
@@ -154,7 +296,9 @@ def manager_thread() -> None:
 
     running = ' '.join("{}{}\u001b[0m".format("\u001b[32m" if p.proc.is_alive() else "\u001b[31m", p.name)
                        for p in managed_processes.values() if p.proc)
-    print(running)
+    print_timer = (print_timer + 1)%10
+    if print_timer == 0:
+      print(running)
     cloudlog.debug(running)
 
     # send managerState
@@ -173,9 +317,14 @@ def manager_thread() -> None:
     if shutdown:
       break
 
-
 def main() -> None:
   manager_init()
+  print(f"python ../../opendbc/car/hyundai/values.py > {Params().get_param_path()}/SupportedCars")
+  os.system(f"python ../../opendbc/car/hyundai/values.py > {Params().get_param_path()}/SupportedCars")
+  os.system(f"python ../../opendbc/car/gm/values.py > {Params().get_param_path()}/SupportedCars_gm")
+  os.system(f"python ../../opendbc/car/toyota/values.py > {Params().get_param_path()}/SupportedCars_toyota")
+  os.system(f"python ../../opendbc/car/mazda/values.py > {Params().get_param_path()}/SupportedCars_mazda")
+
   if os.getenv("PREPAREONLY") is not None:
     return
 

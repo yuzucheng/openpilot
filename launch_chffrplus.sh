@@ -79,7 +79,31 @@ function launch {
   fi
 
   # write tmux scrollback to a file
-  tmux capture-pane -pq -S-1000 > /tmp/launch_log
+  tmux capture-pane -pq -S-1500 > /tmp/launch_log
+  if python -c "import flask" > /dev/null 2>&1; then
+    echo "Flask already installed."
+  else
+    echo "Flask installing."
+    pip install flask
+  fi
+  if python -c "import shapely" > /dev/null 2>&1; then
+    echo "shapely already installed."
+  else
+    echo "shapely installing."
+    pip install shapely
+  fi
+
+  # events language init
+  LANG=$(cat ${PARAMS_ROOT}/d/LanguageSetting)
+  EVENTSTAT=$(git status)
+
+  # events.py 한글로 변경 및 파일이 교체된 상태인지 확인
+  if [ "${LANG}" = "main_ko" ] && [[ ! "${EVENTSTAT}" == *"modified:   selfdrive/controls/lib/events.py"* ]]; then
+    cp -f $BASEDIR/selfdrive/selfdrived/events.py $BASEDIR/scripts/add/events_en.py
+    cp -f $BASEDIR/scripts/add/events_ko.py $BASEDIR/selfdrive/selfdrived/events.py
+  elif [ "${LANG}" = "main_en" ] && [[ "${EVENTSTAT}" == *"modified:   selfdrive/controls/lib/events.py"* ]]; then
+    cp -f $BASEDIR/scripts/add/events_en.py $BASEDIR/selfdrive/selfdrived/events.py
+  fi
 
   # start manager
   cd system/manager

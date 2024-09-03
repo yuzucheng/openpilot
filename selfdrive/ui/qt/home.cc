@@ -9,6 +9,10 @@
 #include "selfdrive/ui/qt/util.h"
 #include "selfdrive/ui/qt/widgets/prime.h"
 
+#ifdef ENABLE_MAPS
+#include "selfdrive/ui/qt/maps/map_settings.h"
+#endif
+
 // HomeWindow: the container for the offroad and onroad UIs
 
 HomeWindow::HomeWindow(QWidget* parent) : QWidget(parent) {
@@ -28,6 +32,7 @@ HomeWindow::HomeWindow(QWidget* parent) : QWidget(parent) {
   slayout->addWidget(home);
 
   onroad = new OnroadWindow(this);
+  QObject::connect(onroad, &OnroadWindow::mapPanelRequested, this, [=] { sidebar->hide(); });
   slayout->addWidget(onroad);
 
   body = new BodyWindow(this);
@@ -48,6 +53,10 @@ void HomeWindow::showSidebar(bool show) {
   sidebar->setVisible(show);
 }
 
+void HomeWindow::showMapPanel(bool show) {
+  onroad->showMapPanel(show);
+}
+
 void HomeWindow::updateState(const UIState &s) {
   const SubMaster &sm = *(s.sm);
 
@@ -56,15 +65,35 @@ void HomeWindow::updateState(const UIState &s) {
     body->setEnabled(true);
     slayout->setCurrentWidget(body);
   }
+  switch (s.scene._current_carrot_display) {
+  case 1: // default
+      sidebar->setVisible(true);
+      break;
+  case 2: // road
+      sidebar->setVisible(false);
+      break;
+  case 3: // map
+      sidebar->setVisible(false);
+      break;
+  case 4: // fullmap
+      sidebar->setVisible(false);
+      break;
+  }
+
 }
 
 void HomeWindow::offroadTransition(bool offroad) {
   body->setEnabled(false);
   sidebar->setVisible(offroad);
+  UIState* s = uiState();
   if (offroad) {
+    
+    s->scene._current_carrot_display = 1;
     slayout->setCurrentWidget(home);
   } else {
     slayout->setCurrentWidget(onroad);
+
+    s->show_brightness_timer = (int)(10. / 0.05);
   }
 }
 
@@ -80,9 +109,12 @@ void HomeWindow::showDriverView(bool show) {
 
 void HomeWindow::mousePressEvent(QMouseEvent* e) {
   // Handle sidebar collapsing
-  if ((onroad->isVisible() || body->isVisible()) && (!sidebar->isVisible() || e->x() > sidebar->width())) {
-    sidebar->setVisible(!sidebar->isVisible());
-  }
+  //if ((onroad->isVisible() || body->isVisible()) && (!sidebar->isVisible() || e->x() > sidebar->width())) {
+    //sidebar->setVisible(!sidebar->isVisible() && !onroad->isMapVisible());
+  //}
+
+  UIState* s = uiState();
+  s->show_brightness_timer = 100;
 }
 
 void HomeWindow::mouseDoubleClickEvent(QMouseEvent* e) {

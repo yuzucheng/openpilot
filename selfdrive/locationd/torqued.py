@@ -9,7 +9,7 @@ from openpilot.common.realtime import config_realtime_process, DT_MDL
 from openpilot.common.filter_simple import FirstOrderFilter
 from openpilot.common.swaglog import cloudlog
 from openpilot.selfdrive.controls.lib.vehicle_model import ACCELERATION_DUE_TO_GRAVITY
-from openpilot.selfdrive.locationd.helpers import PointBuckets, ParameterEstimator, PoseCalibrator, Pose
+from openpilot.selfdrive.locationd.helpers import PointBuckets, ParameterEstimator
 
 HISTORY = 5  # secs
 POINTS_PER_BUCKET = 1500
@@ -52,7 +52,7 @@ class TorqueBuckets(PointBuckets):
 class TorqueEstimator(ParameterEstimator):
   def __init__(self, CP, decimated=False, track_all_points=False):
     self.hist_len = int(HISTORY / DT_MDL)
-    self.lag = CP.steerActuatorDelay + .2  # from controlsd
+    self.lag = Params().get_float("SteerActuatorDelay") * 0.01 #CP.steerActuatorDelay + .2  # from controlsd
     self.track_all_points = track_all_points  # for offline analysis, without max lateral accel or max steer torque filters
     if decimated:
       self.min_bucket_points = MIN_BUCKET_POINTS / 10
@@ -76,8 +76,6 @@ class TorqueEstimator(ParameterEstimator):
     if CP.lateralTuning.which() == 'torque':
       self.offline_friction = CP.lateralTuning.torque.friction
       self.offline_latAccelFactor = CP.lateralTuning.torque.latAccelFactor
-
-    self.calibrator = PoseCalibrator()
 
     self.reset()
 
@@ -173,18 +171,10 @@ class TorqueEstimator(ParameterEstimator):
       # TODO: check if high aEgo affects resulting lateral accel
       self.raw_points["vego"].append(msg.vEgo)
       self.raw_points["steer_override"].append(msg.steeringPressed)
-    elif which == "liveCalibration":
-      self.calibrator.feed_live_calib(msg)
-
-    # calculate lateral accel from past steering torque
-    elif which == "livePose":
+    elif which == "liveLocationKalman":
       if len(self.raw_points['steer_torque']) == self.hist_len:
-        device_pose = Pose.from_live_pose(msg)
-        calibrated_pose = self.calibrator.build_calibrated_pose(device_pose)
-        angular_velocity_calibrated = calibrated_pose.angular_velocity
-
-        yaw_rate = angular_velocity_calibrated.yaw
-        roll = device_pose.orientation.roll
+        yaw_rate = msg.angularVelocityCalibrated.value[2]
+        roll = msg.orientationNED.value[0]
         # check lat active up to now (without lag compensation)
         lat_active = np.interp(np.arange(t - MIN_ENGAGE_BUFFER, t + self.lag, DT_MDL),
                                self.raw_points['carControl_t'], self.raw_points['lat_active']).astype(bool)
@@ -241,7 +231,7 @@ def main(demo=False):
   config_realtime_process([0, 1, 2, 3], 5)
 
   pm = messaging.PubMaster(['liveTorqueParameters'])
-  sm = messaging.SubMaster(['carControl', 'carOutput', 'carState', 'liveCalibration', 'livePose'], poll='livePose')
+  sm = messaging.SubMaster(['carControl', 'carOutput', 'carState', 'liveLocationKalman'], poll='liveLocationKalman')
 
   params = Params()
   estimator = TorqueEstimator(messaging.log_from_bytes(params.get("CarParams", block=True), car.CarParams))
@@ -254,7 +244,7 @@ def main(demo=False):
           t = sm.logMonoTime[which] * 1e-9
           estimator.handle_log(t, which, sm[which])
 
-    # 4Hz driven by livePose
+    # 4Hz driven by liveLocationKalman
     if sm.frame % 5 == 0:
       pm.send('liveTorqueParameters', estimator.get_msg(valid=sm.all_checks()))
 

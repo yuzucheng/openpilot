@@ -10,7 +10,6 @@ from openpilot.common.params import Params
 from openpilot.common.realtime import config_realtime_process, DT_MDL
 from openpilot.selfdrive.locationd.models.car_kf import CarKalman, ObservationKind, States
 from openpilot.selfdrive.locationd.models.constants import GENERATED_DIR
-from openpilot.selfdrive.locationd.helpers import PoseCalibrator, Pose
 from openpilot.common.swaglog import cloudlog
 
 
@@ -39,8 +38,6 @@ class ParamsLearner:
 
     self.active = False
 
-    self.calibrator = PoseCalibrator()
-
     self.speed = 0.0
     self.yaw_rate = 0.0
     self.yaw_rate_std = 0.0
@@ -49,13 +46,12 @@ class ParamsLearner:
     self.roll_valid = False
 
   def handle_log(self, t, which, msg):
-    if which == 'livePose':
-      device_pose = Pose.from_live_pose(msg)
-      calibrated_pose = self.calibrator.build_calibrated_pose(device_pose)
-      self.yaw_rate, self.yaw_rate_std = calibrated_pose.angular_velocity.z, calibrated_pose.angular_velocity.z_std
+    if which == 'liveLocationKalman':
+      self.yaw_rate = msg.angularVelocityCalibrated.value[2]
+      self.yaw_rate_std = msg.angularVelocityCalibrated.std[2]
 
-      localizer_roll, localizer_roll_std = device_pose.orientation.x, device_pose.orientation.x_std
-      localizer_roll_std = np.radians(1) if np.isnan(localizer_roll_std) else localizer_roll_std
+      localizer_roll = msg.orientationNED.value[0]
+      localizer_roll_std = np.radians(1) if np.isnan(msg.orientationNED.std[0]) else msg.orientationNED.std[0]
       self.roll_valid = (localizer_roll_std < ROLL_STD_MAX) and (ROLL_MIN < localizer_roll < ROLL_MAX) and msg.sensorsOK
       if self.roll_valid:
         roll = localizer_roll
@@ -67,7 +63,7 @@ class ParamsLearner:
         roll_std = np.radians(10.0)
       self.roll = np.clip(roll, self.roll - ROLL_MAX_DELTA, self.roll + ROLL_MAX_DELTA)
 
-      yaw_rate_valid = msg.angularVelocityDevice.valid and self.calibrator.calib_valid
+      yaw_rate_valid = msg.angularVelocityCalibrated.valid
       yaw_rate_valid = yaw_rate_valid and 0 < self.yaw_rate_std < 10  # rad/s
       yaw_rate_valid = yaw_rate_valid and abs(self.yaw_rate) < 1  # rad/s
 
@@ -94,15 +90,13 @@ class ParamsLearner:
         self.kf.predict_and_observe(t, ObservationKind.STIFFNESS, np.array([[stiffness]]))
         self.kf.predict_and_observe(t, ObservationKind.STEER_RATIO, np.array([[steer_ratio]]))
 
-    elif which == 'liveCalibration':
-      self.calibrator.feed_live_calib(msg)
-
     elif which == 'carState':
       self.steering_angle = msg.steeringAngleDeg
       self.speed = msg.vEgo
 
+      complex_dynamics = abs(msg.aEgo) > 1.0 or abs(msg.steeringRateDeg) > 20
       in_linear_region = abs(self.steering_angle) < 45
-      self.active = self.speed > MIN_ACTIVE_SPEED and in_linear_region
+      self.active = self.speed > MIN_ACTIVE_SPEED and in_linear_region and not complex_dynamics
 
       if self.active:
         self.kf.predict_and_observe(t, ObservationKind.STEER_ANGLE, np.array([[math.radians(msg.steeringAngleDeg)]]))
@@ -129,7 +123,7 @@ def main():
   REPLAY = bool(int(os.getenv("REPLAY", "0")))
 
   pm = messaging.PubMaster(['liveParameters'])
-  sm = messaging.SubMaster(['livePose', 'liveCalibration', 'carState'], poll='livePose')
+  sm = messaging.SubMaster(['liveLocationKalman', 'carState'], poll='liveLocationKalman')
 
   params_reader = Params()
   # wait for stats about the car to come in from controls
@@ -176,7 +170,7 @@ def main():
 
   pInitial = None
   if DEBUG:
-    pInitial = np.array(params['debugFilterState']['std']) if 'debugFilterState' in params else None
+    pInitial = np.array(params['filterState']['std']) if 'filterState' in params else None
 
   learner = ParamsLearner(CP, params['steerRatio'], params['stiffnessFactor'], math.radians(params['angleOffsetAverageDeg']), pInitial)
   angle_offset_average = params['angleOffsetAverageDeg']
@@ -185,6 +179,8 @@ def main():
   avg_offset_valid = True
   total_offset_valid = True
   roll_valid = True
+  params_memory = Params("/dev/shm/params")
+  params_memory.remove("LastGPSPosition")
 
   while True:
     sm.update()
@@ -194,7 +190,14 @@ def main():
           t = sm.logMonoTime[which] * 1e-9
           learner.handle_log(t, which, sm[which])
 
-    if sm.updated['livePose']:
+    if sm.updated['liveLocationKalman']:
+      location = sm['liveLocationKalman']
+      if (location.status == log.LiveLocationKalman.Status.valid) and location.positionGeodetic.valid and location.gpsOK:
+        bearing = math.degrees(location.calibratedOrientationNED.value[2])
+        lat = location.positionGeodetic.value[0]
+        lon = location.positionGeodetic.value[1]
+        params_memory.put("LastGPSPosition", json.dumps({"latitude": lat, "longitude": lon, "bearing": bearing}))
+        
       x = learner.kf.x
       P = np.sqrt(learner.kf.P.diagonal())
       if not all(map(math.isfinite, x)):
@@ -241,9 +244,10 @@ def main():
       liveParameters.angleOffsetAverageStd = float(P[States.ANGLE_OFFSET].item())
       liveParameters.angleOffsetFastStd = float(P[States.ANGLE_OFFSET_FAST].item())
       if DEBUG:
-        liveParameters.debugFilterState = log.LiveParametersData.FilterState.new_message()
-        liveParameters.debugFilterState.value = x.tolist()
-        liveParameters.debugFilterState.std = P.tolist()
+        liveParameters.filterState = log.LiveLocationKalman.Measurement.new_message()
+        liveParameters.filterState.value = x.tolist()
+        liveParameters.filterState.std = P.tolist()
+        liveParameters.filterState.valid = True
 
       msg.valid = sm.all_checks()
 

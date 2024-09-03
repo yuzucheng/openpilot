@@ -1,5 +1,16 @@
 <div align="center" style="text-align: center;">
 
+<h1>carrotpilot</h1>
+
+<h3>
+  <a href="https://g4iwnl.gitbook.io/carrotpilot">Manual</a>
+</h3>
+
+![image](https://github.com/user-attachments/assets/4d80d256-7e66-4473-a289-04a50733b7e0)
+
+
+<div align="center" style="text-align: center;">
+
 <h1>openpilot</h1>
 
 <p>
