@@ -74,8 +74,9 @@ void hyundai_common_cruise_state_check(const bool cruise_engaged) {
     }
 
     if (!cruise_engaged) {
+      if(controls_allowed) print("controls_allowed1 = false\n");
       controls_allowed = false;
-      print("controls_allowed1 = false\n");
+      
     }
     cruise_engaged_prev = cruise_engaged;
   }
