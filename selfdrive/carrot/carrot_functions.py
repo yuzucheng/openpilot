@@ -120,6 +120,11 @@ class CarrotPlanner:
     self.jerk_factor = 1.0
     self.jerk_factor_apply = 1.0
 
+    self.activeCarrot = 0
+    self.xDistToTurn = 0
+    self.atcType = ""
+    self.atc_active = False
+
 
   def _params_update(self):
     self.frame += 1
@@ -217,7 +222,6 @@ class CarrotPlanner:
     stop_x = self.xStopFilter2.process(stop_x)
     return stop_x
 
-
   def check_model_stopping(self, v, v_ego, a_ego, model_x, y, d_rel):
     v_ego_kph = v_ego * CV.MS_TO_KPH
     model_v = self.vFilter.process(v[-1])
@@ -264,7 +268,7 @@ class CarrotPlanner:
   def _update_carrot_man(self, sm, v_ego_kph, v_cruise_kph):
     if sm.alive['carrotMan']:
       carrot_man = sm['carrotMan']
-      atc_turn_left = carrot_man.atcType == "turn left"
+      atc_turn_left = carrot_man.atcType in ["turn left", "atc left"]
       trigger_start = self.carrot_staty_stop = False
       if atc_turn_left or sm['carState'].leftBlinker:
         if self.trafficState_carrot == 1 and carrot_man.trafficState == 3: # red -> left triggered
@@ -283,6 +287,11 @@ class CarrotPlanner:
         elif self.xState in [XState.e2eStop, XState.e2eStopped]:
           self.xState = XState.e2eCruise
           self.traffic_starting_count = 10.0 / DT_MDL
+
+      self.activeCarrot = carrot_man.activeCarrot
+      self.xDistToTurn = carrot_man.xDistToTurn
+      self.atc_active = self.activeCarrot > 1 and 0 < self.xDistToTurn < 100
+      self.atcType = carrot_man.atcType
 
       v_cruise_kph = min(v_cruise_kph, carrot_man.desiredSpeed)
 
@@ -434,7 +443,10 @@ class CarrotPlanner:
       else:
         self.xState = XState.e2eCruise
 
-    if self.trafficState in [TrafficState.off, TrafficState.green] or self.xState not in [XState.e2eStop, XState.e2eStopped]:
+    if self.atc_active and self.atcType in ["turn left", "turn right", "atc left", "atc right"] and self.xState not in [XState.e2eStop, XState.e2eStopped, XState.lead]:
+      self.xState = XState.e2ePrepare
+
+    elif self.trafficState in [TrafficState.off, TrafficState.green] or self.xState not in [XState.e2eStop, XState.e2eStopped]:
       stop_model_x = 1000.0
 
     if self.user_stop_distance >= 0:
