@@ -98,7 +98,7 @@ def main():
   assert vipc_client.is_connected()
   cloudlog.warning(f"connected with buffer size: {vipc_client.buffer_len}")
 
-  sm = SubMaster(["navInstruction"])
+  sm = SubMaster(["navInstruction", "navInstructionCarrot"])
   pm = PubMaster(["navModel"])
 
   while True:
@@ -111,7 +111,7 @@ def main():
     model_output, dsp_execution_time = model.run(buf.data[:buf.uv_offset])
     t2 = time.perf_counter()
 
-    valid = vipc_client.valid and sm.valid["navInstruction"]
+    valid = vipc_client.valid and (sm.valid["navInstruction"] or sm.valid["navInstructionCarrot"])
     pm.send("navModel", get_navmodel_packet(model_output, valid, vipc_client.frame_id, vipc_client.timestamp_sof, t2 - t1, dsp_execution_time))
 
 

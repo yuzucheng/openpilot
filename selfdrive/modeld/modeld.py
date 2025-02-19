@@ -155,7 +155,7 @@ def main(demo=False):
 
   # messaging
   pm = PubMaster(["modelV2", "cameraOdometry"])
-  sm = SubMaster(["deviceState", "carState", "roadCameraState", "liveCalibration", "driverMonitoringState", "carControl", "carrotMan", "radarState", "navModel", "navInstruction"])
+  sm = SubMaster(["deviceState", "carState", "roadCameraState", "liveCalibration", "driverMonitoringState", "carControl", "carrotMan", "radarState", "navModel", "navInstruction", "navInstructionCarrot"])
 
   publish_state = PublishState()
   params = Params()
@@ -256,9 +256,10 @@ def main(demo=False):
     if nav_enabled and sm.updated["navModel"]:
       nav_features = np.array(sm["navModel"].features)
 
-    if nav_enabled and sm.updated["navInstruction"]:
+    if nav_enabled and (sm.updated["navInstruction"] or sm.updated["navInstructionCarrot"]):
       nav_instructions[:] = 0
-      for maneuver in sm["navInstruction"].allManeuvers:
+      navInstructions = sm["navInstructionCarrot"] if sm.updated["navInstructionCarrot"] else sm["navInstruction"]
+      for maneuver in navInstructions.allManeuvers:
         distance_idx = 25 + int(maneuver.distance / 20)
         direction_idx = 0
         if maneuver.modifier in ("left", "slight left", "sharp left"):
