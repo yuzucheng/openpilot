@@ -286,7 +286,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"LongTuningKiV", PERSISTENT},
     {"LongTuningKf", PERSISTENT},
     {"LongActuatorDelay", PERSISTENT },
-    {"VegoStopping", PERSISTENT },
+    {"VEgoStopping", PERSISTENT },
     {"RadarReactionFactor", PERSISTENT},
     {"EnableRadarTracks", PERSISTENT},
     {"EnableRadarTracksResult", PERSISTENT | CLEAR_ON_MANAGER_START},
