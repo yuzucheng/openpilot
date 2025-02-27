@@ -84,7 +84,8 @@ class Track:
     if self.cnt > 0:
       self.kf.update(self.vLead)
       alpha = 0.15
-      dv = 0.0 if abs(self.vLead) < 0.5 else self.vLead - self.vLead_last
+      #dv = 0.0 if abs(self.vLead) < 0.5 else self.vLead - self.vLead_last
+      dv = self.vLead - self.vLead_last
       self.aLead = self.aLead * (1 - alpha) + dv / DT_MDL * alpha
 
     self.vLeadK = float(self.kf.x[SPEED][0])
