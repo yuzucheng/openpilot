@@ -1449,6 +1449,7 @@ class CarrotServ:
     
   def update_navi(self, remote_ip, sm, pm, vturn_speed, coords, distances, route_speed):
 
+    self.debugText = ""
     self.update_params()
     if sm.alive['carState'] and sm.alive['selfdriveState']:
       CS = sm['carState']
