@@ -31,6 +31,12 @@ NetworkType = log.DeviceState.NetworkType
 nav_type_mapping = {
   12: ("turn", "left", 1),
   16: ("turn", "sharp left", 1),
+  1000: ("turn", "slight left", 1),
+  1001: ("turn", "slight right", 2),
+  1002: ("fork", "slight left", 3),
+  1003: ("fork", "slight right", 4),
+  1006: ("off ramp", "left", 3),
+  1007: ("off ramp", "right", 4),
   13: ("turn", "right", 2),
   19: ("turn", "sharp right", 2),
   102: ("off ramp", "slight left", 3),
@@ -1437,6 +1443,7 @@ class CarrotServ:
           self.xTurnInfo = value[2]
           break
 
+      self.debugText = f"{msg_nav.maneuverType},{msg_nav.maneuverModifier} "
       #print(msg_nav)
       #print(f"navInstruction: {self.xTurnInfo}, {self.xDistToTurn}, {self.szTBTMainText}")
     
@@ -1562,7 +1569,7 @@ class CarrotServ:
         source = "gas"
         desired_speed = self.gas_override_speed
 
-      self.debugText = f"route={route_speed:.1f}"#f"desired={desired_speed:.1f},{source},g={self.gas_override_speed:.0f}"
+      self.debugText += f"route={route_speed:.1f}"#f"desired={desired_speed:.1f},{source},g={self.gas_override_speed:.0f}"
 
     left_spd_sec = 100
     left_tbt_sec = 100
