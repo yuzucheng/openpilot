@@ -408,6 +408,7 @@ class RadarD:
     self.kalman_params = KalmanParams(DT_MDL)
 
     self.v_ego = 0.0
+    print("###RadarD.. : delay = ", delay, int(round(delay / DT_MDL))+1)
     self.v_ego_hist = deque([0.0], maxlen=int(round(delay / DT_MDL))+1)
     self.last_v_ego_frame = -1
 
@@ -422,6 +423,7 @@ class RadarD:
   def update(self, sm: messaging.SubMaster, rr: car.RadarData):
     self.ready = sm.seen['modelV2']
     self.current_time = 1e-9*max(sm.logMonoTime.values())
+
 
     leads_v3 = sm['modelV2'].leadsV3
     if sm.recv_frame['carState'] != self.last_v_ego_frame:
