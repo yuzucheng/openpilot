@@ -438,8 +438,8 @@ class VCruiseCarrot:
           speed_kph = int(self.carrot_arg)
           if 0 < speed_kph < 200:
             v_cruise_kph = speed_kph
-            self._add_log(f"Cruise speed set to {v_cruise_kph} (carrot command)")       
-    
+            self._add_log(f"Cruise speed set to {v_cruise_kph} (carrot command)")
+
     return v_cruise_kph, button_type, long_pressed
 
   def _update_cruise_buttons(self, CS, CC, v_cruise_kph):
@@ -512,7 +512,11 @@ class VCruiseCarrot:
         v_cruise_kph = button_kph
         self._v_cruise_kph_at_brake = 0
       elif button_type == ButtonType.gapAdjustCruise:
-        self.params.put_int_nonblocking("MyDrivingMode", self.params.get_int("MyDrivingMode") % 4 + 1) # 1,2,3,4 (1:eco, 2:safe, 3:normal, 4:high speed)
+        current_speed_mode = self.params.get_int("SpeedFromPCM")
+        new_speed_mode = (current_speed_mode + 1) % 3
+        self.params.put_int_nonblocking("SpeedFromPCM", new_speed_mode)
+        self._add_log(f"SpeedFromPCM changed to {new_speed_mode}")
+        #self.params.put_int_nonblocking("MyDrivingMode", self.params.get_int("MyDrivingMode") % 4 + 1) # 1,2,3,4 (1:eco, 2:safe, 3:normal, 4:high speed)
       elif button_type == ButtonType.lfaButton:
         useLaneLineSpeed = max(1, self.useLaneLineSpeed)
         self.params.put_int_nonblocking("UseLaneLineSpeedApply", useLaneLineSpeed if self.params.get_int("UseLaneLineSpeedApply") == 0 else 0)
