@@ -727,7 +727,7 @@
     </message>
     <message>
         <source>openpilot</source>
-        <translation type="vanished">openpilot</translation>
+        <translation>openpilot</translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s) ago</source>
@@ -770,7 +770,6 @@
     <message>
         <source>carrotpilot</source>
         <translation>胡萝卜驾驶</translation>
-    </message>
     </message>
 </context>
 <context>
