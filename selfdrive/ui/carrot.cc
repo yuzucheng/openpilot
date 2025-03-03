@@ -2207,9 +2207,10 @@ public:
         int gap = params.getInt("LongitudinalPersonality") + 1;
         dx = bx + 220;
         dy = by + 77;
+        auto carState = sm["carState"].getCarState();
         //sprintf(gap_str, "%d", gap);
         //ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
-        sprintf(gap_str, "%.0f", v_cruise * 3.6); // 将 m/s 转换为 km/h
+        sprintf(gap_str, "%.0f", carState.cruiseState().speed() ); // 将 m/s 转换为 km/h
         ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);// 移除动画效果相关代码
         //if (gap_last != gap) ui_draw_text_a(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
         gap_last = gap;
@@ -2219,7 +2220,7 @@ public:
         //float ddx = 70 / 4.;
         float ddy = 80 / 4.;
 #ifdef __UI_TEST
-        gap = 3;
+        gap = 0;
 #endif
         for (int i = 0; i < gap; i++) {
             //ui_fill_rect(s->vg, { (int)(dx + i * ddx), (int)dy, (int)ddx - 2, 48 }, COLOR_GREEN_ALPHA(180), 4, 3);
