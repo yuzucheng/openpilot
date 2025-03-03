@@ -2222,7 +2222,7 @@ public:
         //float ddx = 70 / 4.;
         float ddy = 80 / 4.;
 #ifdef __UI_TEST
-        gap = 0;
+        gap = 3;
 #endif
         for (int i = 0; i < gap; i++) {
             //ui_fill_rect(s->vg, { (int)(dx + i * ddx), (int)dy, (int)ddx - 2, 48 }, COLOR_GREEN_ALPHA(180), 4, 3);
