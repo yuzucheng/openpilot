@@ -2207,12 +2207,11 @@ public:
         int gap = params.getInt("LongitudinalPersonality") + 1;
         dx = bx + 220;
         dy = by + 77;
-        auto carState = sm["carState"].cruiseState();
-        //sprintf(gap_str, "%d", gap);
-        //ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
-        sprintf(gap_str, "%.0f", carState.speed()*3.6 ); // 将 m/s 转换为 km/h
-        ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);// 移除动画效果相关代码
-        //if (gap_last != gap) ui_draw_text_a(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
+
+        // 显示巡航设定速度（km/h）
+        float setSpeed = carState.getCruiseState().getSpeed() * 3.6;  // 转换为 km/h
+        sprintf(gap_str, "%.0f", setSpeed);
+        ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
         gap_last = gap;
 
         dx = bx + 300 - 30;
