@@ -2209,8 +2209,7 @@ public:
         dy = by + 77;
 
         // 显示巡航设定速度（km/h）
-        //SubMaster& sm = *(s->sm);
-        //auto carState = sm["carState"].getCarState();
+        auto carState = sm["carState"].getCarState();  // 重新获取carState
         float setSpeed = carState.getCruiseState().getSpeed() * 3.6;  // 转换为 km/h
         sprintf(gap_str, "%.0f", setSpeed);
         ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
