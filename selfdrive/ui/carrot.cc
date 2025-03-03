@@ -2208,8 +2208,10 @@ public:
         dx = bx + 220;
         dy = by + 77;
 
+        // 获取carState数据
+        auto carState = sm["carState"].getCarState();
+
         // 显示巡航设定速度（km/h）
-        auto carState = sm["carState"].getCarState();  // 重新获取carState
         float setSpeed = carState.getCruiseState().getSpeed() * 3.6;  // 转换为 km/h
         sprintf(gap_str, "%.0f", setSpeed);
         ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
@@ -2230,15 +2232,15 @@ public:
         char gear_str[32] = "R";
         dx = bx + 305;
         dy = by + 60;
-        //const SubMaster& sm = *(s->sm);
-        auto carState = sm["carState"].getCarState();
+
+        // 使用之前获取的carState
         if (carState.getGearShifter() == cereal::CarState::GearShifter::UNKNOWN) strcpy(gear_str, "U");
         else if (carState.getGearShifter() == cereal::CarState::GearShifter::PARK) strcpy(gear_str, "P");
         else if (carState.getGearShifter() == cereal::CarState::GearShifter::DRIVE) {
             if (carState.getGearStep() > 0)
-				sprintf(gear_str, "%d", carState.getGearStep());
-			else
-				strcpy(gear_str, "D");
+                sprintf(gear_str, "%d", carState.getGearStep());
+            else
+                strcpy(gear_str, "D");
         }
         else if(carState.getGearShifter() == cereal::CarState::GearShifter::NEUTRAL) strcpy(gear_str, "N");
         else if (carState.getGearShifter() == cereal::CarState::GearShifter::REVERSE) strcpy(gear_str, "R");
