@@ -2315,7 +2315,7 @@ public:
             dx += 150;
             ui_fill_rect(s->vg, { dx - 65, dy - 38, 130, 90 }, mode_color, 15, 2);
             ui_draw_text(s, dx, dy-5, "RPM", 25, COLOR_WHITE, BOLD);
-            sprintf(str, "%d", (int)car_state.getEngineRpm());
+            sprintf(str, "%d", (int)carState.getEngineRpm());
             ui_draw_text(s, dx, dy + 40, str, 40, COLOR_WHITE, BOLD);
         }
     }
