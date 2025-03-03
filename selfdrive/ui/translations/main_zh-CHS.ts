@@ -88,6 +88,37 @@
     </message>
 </context>
 <context>
+    <name>CarrotPanel</name>
+    <message>
+        <source>Start</source>
+        <translation>开始</translation>
+    </message>
+    <message>
+        <source>Cruise</source>
+        <translation>巡航</translation>
+    </message>
+    <message>
+        <source>Speed</source>
+        <translation>速度</translation>
+    </message>
+    <message>
+        <source>Tuning</source>
+        <translation>调校</translation>
+    </message>
+    <message>
+        <source>Disp</source>
+        <translation>显示</translation>
+    </message>
+    <message>
+        <source>Path</source>
+        <translation>路径</translation>
+    </message>
+    <message>
+        <source>SELECT YOUR CAR</source>
+        <translation>选择您的车辆</translation>
+    </message>
+</context>
+<context>
     <name>ConfirmationDialog</name>
     <message>
         <source>Ok</source>
@@ -114,34 +145,61 @@
     </message>
 </context>
 <context>
+    <name>DestinationWidget</name>
+    <message>
+        <source>Home</source>
+        <translation>家</translation>
+    </message>
+    <message>
+        <source>Work</source>
+        <translation>工作</translation>
+    </message>
+    <message>
+        <source>No destination set</source>
+        <translation>未设置目的地</translation>
+    </message>
+    <message>
+        <source>home</source>
+        <translation>家</translation>
+    </message>
+    <message>
+        <source>work</source>
+        <translation>工作</translation>
+    </message>
+    <message>
+        <source>No %1 location set</source>
+        <translation>未设置 %1 位置</translation>
+    </message>
+</context>
+<context>
     <name>DeveloperPanel</name>
     <message>
         <source>Joystick Debug Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>摇杆调试模式</translation>
     </message>
     <message>
         <source>Longitudinal Maneuver Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>纵向操控模式</translation>
     </message>
     <message>
         <source>openpilot Longitudinal Control (Alpha)</source>
-        <translation type="unfinished">openpilot纵向控制（Alpha 版）</translation>
+        <translation>openpilot 纵向控制（Alpha 版）</translation>
     </message>
     <message>
         <source>WARNING: openpilot longitudinal control is in alpha for this car and will disable Automatic Emergency Braking (AEB).</source>
-        <translation type="unfinished">警告：此车辆的 openpilot 纵向控制功能目前处于Alpha版本，使用此功能将会停用自动紧急制动（AEB）功能。</translation>
+        <translation>警告：此车辆的 openpilot 纵向控制功能目前处于 Alpha 版本，使用此功能将会停用自动紧急制动（AEB）功能。</translation>
     </message>
     <message>
         <source>On this car, openpilot defaults to the car&apos;s built-in ACC instead of openpilot&apos;s longitudinal control. Enable this to switch to openpilot longitudinal control. Enabling Experimental mode is recommended when enabling openpilot longitudinal control alpha.</source>
-        <translation type="unfinished">在这辆车上，openpilot 默认使用车辆内建的主动巡航控制（ACC），而非 openpilot 的纵向控制。启用此项功能可切换至 openpilot 的纵向控制。当启用 openpilot 纵向控制 Alpha 版本时，建议同时启用实验性模式（Experimental mode）。</translation>
+        <translation>在这辆车上，openpilot 默认使用车辆内建的主动巡航控制（ACC），而非 openpilot 的纵向控制。启用此功能可切换至 openpilot 的纵向控制。建议在启用 openpilot 纵向控制 Alpha 版本时同时启用实验性模式。</translation>
     </message>
     <message>
         <source>Enable ADB</source>
-        <translation type="unfinished"></translation>
+        <translation>启用 ADB</translation>
     </message>
     <message>
         <source>ADB (Android Debug Bridge) allows connecting to your device over USB or over the network. See https://docs.comma.ai/how-to/connect-to-comma for more info.</source>
-        <translation type="unfinished"></translation>
+        <translation>ADB（Android 调试桥）允许通过 USB 或网络连接到您的设备。有关更多信息，请参见 https://docs.comma.ai/how-to/connect-to-comma。</translation>
     </message>
 </context>
 <context>
@@ -172,11 +230,11 @@
     </message>
     <message>
         <source>Reset Calibration</source>
-        <translation>重置设备校准</translation>
+        <translation type="vanished">重置设备校准</translation>
     </message>
     <message>
         <source>RESET</source>
-        <translation>重置</translation>
+        <translation type="vanished">重置</translation>
     </message>
     <message>
         <source>Are you sure you want to reset calibration?</source>
@@ -268,7 +326,7 @@
     </message>
     <message>
         <source>Reset</source>
-        <translation>重置</translation>
+        <translation type="vanished">重置</translation>
     </message>
     <message>
         <source>Review</source>
@@ -285,6 +343,85 @@
     <message>
         <source>PAIR</source>
         <translation>配对</translation>
+    </message>
+    <message>
+        <source>ReCalibration</source>
+        <translation>重新校准</translation>
+    </message>
+    <message>
+        <source>Git Pull &amp; Reboot</source>
+        <translation>Git 拉取并重启</translation>
+    </message>
+    <message>
+        <source>Git pull &amp; Reboot?</source>
+        <translation>是否要进行 Git 拉取并重启？</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>是</translation>
+    </message>
+    <message>
+        <source>Git fetch process timed out.</source>
+        <translation>Git 拉取过程超时。</translation>
+    </message>
+    <message>
+        <source>Git fetch process crashed.</source>
+        <translation>Git 拉取过程崩溃。</translation>
+    </message>
+    <message>
+        <source>Failed to fetch updates.</source>
+        <translation>无法获取更新。</translation>
+    </message>
+    <message>
+        <source>Failed to read Git status.</source>
+        <translation>无法读取 Git 状态。</translation>
+    </message>
+    <message>
+        <source>Already up to date.</source>
+        <translation>已经是最新版本。</translation>
+    </message>
+    <message>
+        <source>Git pull failed. Please check the logs.</source>
+        <translation>Git 拉取失败。请检查日志。</translation>
+    </message>
+    <message>
+        <source>Git pull successful. Rebooting...</source>
+        <translation>Git 拉取成功。正在重启...</translation>
+    </message>
+    <message>
+        <source>Set default</source>
+        <translation>设置为默认</translation>
+    </message>
+    <message>
+        <source>Set to default?</source>
+        <translation>是否设置为默认？</translation>
+    </message>
+    <message>
+        <source>Reboot &amp; Disengage to Calibration</source>
+        <translation>重启并取消以进行校准</translation>
+    </message>
+</context>
+<context>
+    <name>DrawCarrot</name>
+    <message>
+        <source>ECO</source>
+        <translation>经济</translation>
+    </message>
+    <message>
+        <source>SAFE</source>
+        <translation>安全</translation>
+    </message>
+    <message>
+        <source>NORM</source>
+        <translation>普通</translation>
+    </message>
+    <message>
+        <source>FAST</source>
+        <translation>快速</translation>
+    </message>
+    <message>
+        <source>ERRM</source>
+        <translation>错误</translation>
     </message>
 </context>
 <context>
@@ -338,6 +475,51 @@
     <message>
         <source>Installing...</source>
         <translation>正在安装……</translation>
+    </message>
+</context>
+<context>
+    <name>MapETA</name>
+    <message>
+        <source>eta</source>
+        <translation>预计到达时间</translation>
+    </message>
+    <message>
+        <source>min</source>
+        <translation>分钟</translation>
+    </message>
+    <message>
+        <source>hr</source>
+        <translation>小时</translation>
+    </message>
+</context>
+<context>
+    <name>MapSettings</name>
+    <message>
+        <source>NAVIGATION</source>
+        <translation>导航</translation>
+    </message>
+    <message>
+        <source>Manage at %1</source>
+        <translation>在 %1 管理</translation>
+    </message>
+    <message>
+        <source>Manage at connect.comma.ai</source>
+        <translation>在 connect.comma.ai 管理</translation>
+    </message>
+</context>
+<context>
+    <name>MapWindow</name>
+    <message>
+        <source>Map Loading</source>
+        <translation>地图加载中</translation>
+    </message>
+    <message>
+        <source>Waiting for GPS(APN)</source>
+        <translation>等待 GPS（APN）</translation>
+    </message>
+    <message>
+        <source>Waiting for route</source>
+        <translation>等待路线</translation>
     </message>
 </context>
 <context>
@@ -545,7 +727,7 @@
     </message>
     <message>
         <source>openpilot</source>
-        <translation>openpilot</translation>
+        <translation type="vanished">openpilot</translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s) ago</source>
@@ -568,6 +750,27 @@
     <message>
         <source>now</source>
         <translation>现在</translation>
+    </message>
+    <message>
+        <source>km</source>
+        <translation>公里</translation>
+    </message>
+    <message>
+        <source>m</source>
+        <translation>米</translation>
+    </message>
+    <message>
+        <source>mi</source>
+        <translation>英里</translation>
+    </message>
+    <message>
+        <source>ft</source>
+        <translation>英尺</translation>
+    </message>
+    <message>
+        <source>carrotpilot</source>
+        <translation>胡萝卜驾驶</translation>
+    </message>
     </message>
 </context>
 <context>
@@ -635,7 +838,11 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Developer</source>
-        <translation type="unfinished"></translation>
+        <translation>开发者</translation>
+    </message>
+    <message>
+        <source>Carrot</source>
+        <translation>Carrot</translation>
     </message>
 </context>
 <context>
@@ -1072,6 +1279,10 @@ This may take up to a minute.</source>
     <message>
         <source>Enable driver monitoring even when openpilot is not engaged.</source>
         <translation>即使在openpilot未激活时也启用驾驶员监控。</translation>
+    </message>
+    <message>
+        <source>MoreRelaxed</source>
+        <translation>更加放松</translation>
     </message>
 </context>
 <context>
