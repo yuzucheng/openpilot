@@ -586,19 +586,25 @@ def carinfo():
         traceback.print_exc()
         return render_template("carinfo.html", car_info={"error": f"Error getting vehicle information: {str(e)}"})
 
-@app.route("/amap_nav")
+@app.route("/amap_nav", methods=['GET', 'POST'])
 def amap_nav():
     """高德地图导航页面"""
     try:
-        # 使用默认坐标（北京）
-        lat = 39.9042  # 默认北京位置
-        lon = 116.4074
+        if request.method == 'POST':
+            # 处理导航请求
+            postvars = request.form.to_dict()
+            fleet.nav_confirmed(postvars)  # 使用现有的导航确认函数
+            return redirect(url_for('amap_nav'))  # 导航开始后重定向回地图页面
+        else:
+            # GET 请求显示地图
+            lat = 39.9042  # 默认北京位置
+            lon = 116.4074
 
-        return render_template(
-            "amap_addr_input.html",
-            lat=lat,
-            lon=lon
-        )
+            return render_template(
+                "amap_addr_input.html",
+                lat=lat,
+                lon=lon
+            )
     except Exception as e:
         return render_template("error.html", error=str(e))
 
