@@ -509,7 +509,7 @@ def carinfo():
                         "Cruise Status": "On" if CS.cruiseState.enabled else "Off",
                         "Adaptive Cruise": "On" if CS.cruiseState.available else "Off",
                         "Set Speed": f"{CS.cruiseState.speed * 3.6:.1f} km/h" if CS.cruiseState.speed > 0 else "Not Set",
-                        "Following Distance": str(CS.pcmCruiseGap) if hasattr(CS.cruiseState, 'pcmCruiseGap') else "Unknown"
+                        "Following Distance": str(CS.cruiseState.pcmCruiseGap) if hasattr(CS.cruiseState, 'pcmCruiseGap') else "Unknown"
                     },
                     "Wheel Speeds": {
                         "Front Left": f"{CS.wheelSpeeds.fl * 3.6:.1f} km/h",
