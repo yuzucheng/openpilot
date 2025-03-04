@@ -590,10 +590,9 @@ def carinfo():
 def amap_nav():
     """高德地图导航页面"""
     try:
-        # 获取当前位置
-        location = get_current_location()  # 假设这个函数已存在
-        lat = location.get('lat', 39.9042)  # 默认北京位置
-        lon = location.get('lon', 116.4074)
+        # 使用默认坐标（北京）
+        lat = 39.9042  # 默认北京位置
+        lon = 116.4074
 
         return render_template(
             "amap_addr_input.html",
