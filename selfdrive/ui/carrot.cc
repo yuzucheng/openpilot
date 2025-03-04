@@ -2204,7 +2204,7 @@ public:
         }
 
         char gap_str[32];
-        //int gap = params.getInt("LongitudinalPersonality") + 1;
+        int gap = params.getInt("LongitudinalPersonality") + 1;
         dx = bx + 220;
         dy = by + 77;
 
@@ -2215,7 +2215,7 @@ public:
         float setSpeed = carState.getCruiseState().getSpeed() * 3.6;  // 转换为 km/h
         sprintf(gap_str, "%.0f", setSpeed);
         ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
-        int gap = carState.getCruiseState().pcmCruiseGap();
+        //int gap = carState.getCruiseState().pcmCruiseGap();
         gap_last = gap;
 
         dx = bx + 300 - 30;
