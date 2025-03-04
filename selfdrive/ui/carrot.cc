@@ -2204,7 +2204,7 @@ public:
         }
 
         char gap_str[32];
-        int gap = params.getInt("LongitudinalPersonality") + 1;
+        //int gap = params.getInt("LongitudinalPersonality") + 1;
         dx = bx + 220;
         dy = by + 77;
 
