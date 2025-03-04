@@ -2215,6 +2215,7 @@ public:
         float setSpeed = carState.getCruiseState().getSpeed() * 3.6;  // 转换为 km/h
         sprintf(gap_str, "%.0f", setSpeed);
         ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
+        int gap = carState.getCruiseState().pcmCruiseGap()
         gap_last = gap;
 
         dx = bx + 300 - 30;
@@ -2222,7 +2223,7 @@ public:
         //float ddx = 70 / 4.;
         float ddy = 80 / 4.;
 #ifdef __UI_TEST
-        gap = 3;
+        gap = 4;
 #endif
         for (int i = 0; i < gap; i++) {
             //ui_fill_rect(s->vg, { (int)(dx + i * ddx), (int)dy, (int)ddx - 2, 48 }, COLOR_GREEN_ALPHA(180), 4, 3);
@@ -2344,7 +2345,7 @@ public:
             }
             if (show_datetime == 1 || show_datetime == 3) {
                 //strftime(str, sizeof(str), "%m-%d-%a", local);
-                const char* weekdays_ko[] = { "일", "월", "화", "수", "목", "금", "토" };
+                const char* weekdays_ko[] = { "周日", "周一", "周二", "周三", "周四", "周五", "周六" };
                 strftime(str, sizeof(str), "%m-%d", local); // 날짜만 가져옴
                 int weekday_index = local->tm_wday; // tm_wday: 0=일, 1=월, ..., 6=토
                 snprintf(str + strlen(str), sizeof(str) - strlen(str), "(%s)", weekdays_ko[weekday_index]);
