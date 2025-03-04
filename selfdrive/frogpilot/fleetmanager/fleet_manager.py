@@ -586,6 +586,57 @@ def carinfo():
         traceback.print_exc()
         return render_template("carinfo.html", car_info={"error": f"Error getting vehicle information: {str(e)}"})
 
+@app.route("/amap_addr", methods=["GET", "POST"])
+def amap_addr():
+    # 直接使用硬编码的 key
+    amap_key = "faf2f8ab406a8da1231ef7e10d501b65"
+    amap_key_2 = "fc2724b3c96a7f244b2211f05c5264be"
+
+    # 获取当前位置
+    try:
+        location = get_current_location()  # 假设这个函数已存在
+        lat = location.get("lat", 31.2304)  # 默认上海坐标
+        lon = location.get("lon", 121.4737)
+    except:
+        lat = 31.2304  # 默认上海坐标
+        lon = 121.4737
+
+    if request.method == "POST":
+        # 处理导航请求
+        lat = request.form.get("lat")
+        lon = request.form.get("lon")
+        save_type = request.form.get("save_type", "recent")
+        name = request.form.get("name", "")
+
+        # 保存目的地
+        save_destination(save_type, name, lat, lon)  # 假设这个函数已存在
+
+        # 生成导航路线
+        generate_route(lat, lon)  # 假设这个函数已存在
+
+        # 重定向到导航页面
+        return redirect("/prime")
+
+    # 获取保存的地址
+    home = get_saved_location("home")  # 假设这个函数已存在
+    work = get_saved_location("work")
+    fav1 = get_saved_location("fav1")
+    fav2 = get_saved_location("fav2")
+    fav3 = get_saved_location("fav3")
+
+    return render_template(
+        "amap_addr_input.html",
+        amap_key=amap_key,
+        amap_key_2=amap_key_2,
+        lat=lat,
+        lon=lon,
+        home=home,
+        work=work,
+        fav1=fav1,
+        fav2=fav2,
+        fav3=fav3
+    )
+
 def main():
   try:
     set_core_affinity([0, 1, 2, 3])
