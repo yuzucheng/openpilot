@@ -687,11 +687,11 @@ public:
         else if (longActive) {
             if (xState == 3 || xState == 5) {      //XState.e2eStop, XState.e2eStopped
                 if (v_ego < 1.0) {
-                    sprintf(str, "%s", (trafficState >= 1000) ? "신호오류" : "신호대기");
+                    sprintf(str, "%s", (trafficState >= 1000) ? "信号错误" : "信号等待");
                     ui_draw_text(s, x, disp_y, str, disp_size, COLOR_WHITE, BOLD);
                 }
                 else {
-                    ui_draw_text(s, x, disp_y, "신호감속중", disp_size, COLOR_WHITE, BOLD);
+                    ui_draw_text(s, x, disp_y, "信号减速中", disp_size, COLOR_WHITE, BOLD);
                 }
 #if 0
                 else if (getStopDist() > 0.5) {
@@ -703,7 +703,7 @@ public:
 #endif
             }
             else if (xState == 4) {     //XState.e2ePrepare
-				      ui_draw_text(s, x, disp_y, "E2E주행중", disp_size, COLOR_WHITE, BOLD);
+				      ui_draw_text(s, x, disp_y, "E2E驾驶中", disp_size, COLOR_WHITE, BOLD);
 			      }
             else if (xState == 0 || xState == 1 || xState == 2) {     //XState.lead
                 draw_dist = true;
@@ -1026,10 +1026,10 @@ protected:
         active_carrot = 2;
         nGoPosDist = 500000;
         nGoPosTime = 4 * 60 * 60;
-        szSdiDescr = "어린이 보호구역(스쿨존 시작 구간)";
+        szSdiDescr = "儿童保护区（学校区域开始段）";
         xTurnInfo = 1;
         xDistToTurn = 1000;
-        szPosRoadName = "구문천 1길 17";
+        szPosRoadName = "구문천 1길 17"; // 此处保持原文不变
 #endif
 
         //if (active_carrot <= 1) return;
@@ -1071,9 +1071,9 @@ protected:
             case 4: ui_draw_image(s, { bx - icon_size / 2, by - icon_size / 2, icon_size, icon_size }, "ic_lane_change_r", 1.0f); break;
             case 7: ui_draw_image(s, { bx - icon_size / 2, by - icon_size / 2, icon_size, icon_size }, "ic_turn_u", 1.0f); break;
             case 6: ui_draw_text(s, bx, by + 20, "TG", 35, COLOR_WHITE, BOLD); break;
-            case 8: ui_draw_text(s, bx, by + 20, "목적지", 35, COLOR_WHITE, BOLD); break;
+            case 8: ui_draw_text(s, bx, by + 20, "目的地", 35, COLOR_WHITE, BOLD); break;
             default:
-                sprintf(str, "감속:%d", xTurnInfo);
+                sprintf(str, "减速:%d", xTurnInfo);
                 ui_draw_text(s, bx, by + 20, str, 35, COLOR_WHITE, BOLD);
                 break;
             }
@@ -1097,14 +1097,14 @@ protected:
         }
 
         if (nGoPosDist > 0 && nGoPosTime > 0) {
-            time_t now = time(NULL);  // 현재 시간 얻기
+            time_t now = time(NULL);  // 获取当前时间
             struct tm* local = localtime(&now);
             int remaining_minutes = (int)nGoPosTime / 60;
             local->tm_min += remaining_minutes;
             mktime(local);
-            sprintf(str, "도착: %.1f분(%02d:%02d)", (float)nGoPosTime / 60., local->tm_hour, local->tm_min);
+            sprintf(str, "到达: %.1f分钟(%02d:%02d)", (float)nGoPosTime / 60., local->tm_hour, local->tm_min);
             ui_draw_text(s, tbt_x + 190, tbt_y + 80, str, 50, COLOR_WHITE, BOLD);
-            sprintf(str, "%.1fkm", nGoPosDist / 1000.);
+            sprintf(str, "%.1f公里", nGoPosDist / 1000.);
             ui_draw_text(s, tbt_x + 190 + 120, tbt_y + 130, str, 50, COLOR_WHITE, BOLD);
         }
     }
