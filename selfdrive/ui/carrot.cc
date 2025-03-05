@@ -2215,7 +2215,7 @@ public:
         float setSpeed = carState.getCruiseState().getSpeed() * 3.64428;  // 转换为 km/h
         sprintf(gap_str, "%.0f", setSpeed);
         ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
-        int gap_mazda = carState.pcmCruiseGap();  //int gap_mazda = carState.getPcmCruiseGap();
+        int gap_mazda = carState.getPcmCruiseGap();  //int gap_mazda = carState.getPcmCruiseGap();
         gap_last = gap;
 
         dx = bx + 300 - 30;
