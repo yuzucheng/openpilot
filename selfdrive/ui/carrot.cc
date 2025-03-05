@@ -2212,10 +2212,10 @@ public:
         auto carState = sm["carState"].getCarState();
 
         // 显示巡航设定速度（km/h）
-        float setSpeed = carState.getCruiseState().getSpeed() * 3.6;  // 转换为 km/h
+        float setSpeed = carState.getCruiseState().getSpeed() * 3.64428;  // 转换为 km/h
         sprintf(gap_str, "%.0f", setSpeed);
         ui_draw_text(s, dx, dy, gap_str, 40, COLOR_WHITE, BOLD);
-        //int gap = carState.getCruiseState().pcmCruiseGap();
+        int gap_mazda = carState.pcmCruiseGap();  //int gap_mazda = carState.getPcmCruiseGap();
         gap_last = gap;
 
         dx = bx + 300 - 30;
@@ -2225,7 +2225,7 @@ public:
 #ifdef __UI_TEST
         gap = 4;
 #endif
-        for (int i = 0; i < gap; i++) {
+        for (int i = 0; i < gap_mazda; i++) {
             //ui_fill_rect(s->vg, { (int)(dx + i * ddx), (int)dy, (int)ddx - 2, 48 }, COLOR_GREEN_ALPHA(180), 4, 3);
             ui_fill_rect(s->vg, { (int)(dx), (int)(dy - ddy*(i+1) + 2), (int)70, (int)ddy-2}, COLOR_GREEN_ALPHA(210), 4, 3, &white_color);
         }
