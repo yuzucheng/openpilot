@@ -172,7 +172,7 @@ def update_restart_condition(current_time, restart_triggered_ts, params, onroad_
       if softRestartTriggered == 2:
         print("Parameter set to default")
         set_default_params()
-        
+
       params.put_int("SoftRestartTriggered", 0)
       restart_triggered_ts = current_time
   return restart_triggered_ts
@@ -337,7 +337,7 @@ def hardware_thread(end_event, hw_queue) -> None:
     set_offroad_alert_if_changed("Offroad_TemperatureTooHigh", show_alert, extra_text=extra_text)
 
     # TODO: this should move to TICI.initialize_hardware, but we currently can't import params there
-    if TICI and HARDWARE.get_device_type() == "tici":
+    if False: #TICI and HARDWARE.get_device_type() == "tici":
       if not os.path.isfile("/persist/comma/living-in-the-moment"):
         if not Path("/data/media").is_mount():
           set_offroad_alert_if_changed("Offroad_StorageMissing", True)
