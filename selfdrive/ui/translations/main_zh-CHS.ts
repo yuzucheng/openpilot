@@ -3115,7 +3115,7 @@ This feature must be used along with SLC, and/or V-TSC, and/or M-TSC.</source>
 <context>
     <name>TorqueFriction</name>
     <message>
-        <source>FRICTION</source>
+        <source>FRICTION - </source>
         <translation>摩擦力</translation>
     </message>
     <message>
@@ -3134,7 +3134,7 @@ This feature must be used along with SLC, and/or V-TSC, and/or M-TSC.</source>
 <context>
     <name>TorqueMaxLatAccel</name>
     <message>
-        <source>LAT_ACCEL_FACTOR</source>
+        <source>LAT_ACCEL_FACTOR - </source>
         <translation>横向控制加速度</translation>
     </message>
     <message>
