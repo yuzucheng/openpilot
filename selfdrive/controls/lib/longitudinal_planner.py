@@ -14,7 +14,7 @@ from openpilot.selfdrive.controls.lib.sunnypilot.common import Source
 from openpilot.selfdrive.controls.lib.sunnypilot.speed_limit_controller import SpeedLimitController
 from openpilot.selfdrive.car.interfaces import ACCEL_MIN, ACCEL_MAX
 from openpilot.selfdrive.controls.lib.longcontrol import LongCtrlState
-from openpilot.selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import LongitudinalMpc
+from openpilot.selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import LongitudinalMpc, N
 from openpilot.selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import T_IDXS as T_IDXS_MPC
 from openpilot.selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX, CONTROL_N, get_speed_error
 from openpilot.selfdrive.controls.lib.vision_turn_controller import VisionTurnController
@@ -22,11 +22,23 @@ from openpilot.selfdrive.controls.lib.turn_speed_controller import TurnSpeedCont
 from openpilot.selfdrive.controls.lib.dynamic_experimental_controller import DynamicExperimentalController
 from openpilot.selfdrive.controls.lib.events import Events
 from openpilot.common.swaglog import cloudlog
+from openpilot.selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX, V_CRUISE_UNSET
+from openpilot.selfdrive.fishsp.traffic_light import CarrotPlanner, XState
 
 LON_MPC_STEP = 0.2  # first step is 0.2s
-A_CRUISE_MIN = -1.2
-A_CRUISE_MAX_VALS = [1.6, 1.2, 0.8, 0.6]
-A_CRUISE_MAX_BP = [0., 10.0, 25., 40.]
+A_CRUISE_MIN = -2.5 #-1.2
+#A_CRUISE_MAX_VALS = [1.6, 1.2, 0.8, 0.6]
+#A_CRUISE_MAX_BP =   [0., 10.0, 25., 40.]
+#            km/h    0    36    90   144
+
+#A_CRUISE_MAX_VALS = [1.4, 1.4,  1.4,  1.2,  1.0,   0.9,   0.8,   0.7,   0.6,  .53,  .42,  .13]
+#A_CRUISE_ECO_VALS = [1.2, 1.2,  1.2,  1.1,  1.0,   0.85,  0.7,   0.65,  0.5,  .43,  .32,  .088]
+A_CRUISE_MAX_VALS = [1.6, 1.6,  1.6,  1.4,  1.0,   0.9,   0.8,   0.7,   0.6,  .53,  .42,  .13]
+A_CRUISE_ECO_VALS = [1.4, 1.4,  1.4,  1.2,  1.0,   0.9,   0.8,   0.7,   0.6,  .53,  .42,  .13]
+A_JERK_MAX_VALS =   [0.4, 0.6,  0.6,  0.8,  0.8,   0.8,   0.7,   0.6,   0.5,   0.4,  0.2,   0.1] # 仅在启动巡航时平滑用
+A_JERK_ECO_VALS =   [0.3, 0.5,  0.5,  0.5,  0.4,   0.4,   0.3,   0.2,   0.2,   0.2,  0.2,   0.1]
+A_CRUISE_MAX_BP =   [0.,  2.78, 5.56, 8.33, 11.11, 13.33, 15.55, 17.78, 22.22, 25.,  27.8,  55.6]
+#            km/h    0    10    20    30    40     50     60     70     80     90    100    200
 
 # Lookup table for turns
 _A_TOTAL_MAX_V = [1.7, 3.2]
@@ -36,9 +48,17 @@ _A_TOTAL_MAX_BP = [20., 40.]
 EventName = car.CarEvent.EventName
 
 
-def get_max_accel(v_ego):
-  return interp(v_ego, A_CRUISE_MAX_BP, A_CRUISE_MAX_VALS)
+def get_max_accel(v_ego, eco):
+  if eco:
+    return interp(v_ego, A_CRUISE_MAX_BP, A_CRUISE_ECO_VALS)
+  else:
+    return interp(v_ego, A_CRUISE_MAX_BP, A_CRUISE_MAX_VALS)
 
+def get_max_jerk(v_ego, eco):
+  if eco:
+    return interp(v_ego, A_CRUISE_MAX_BP, A_JERK_ECO_VALS)
+  else:
+    return interp(v_ego, A_CRUISE_MAX_BP, A_JERK_MAX_VALS)
 
 def limit_accel_in_turns(v_ego, angle_steers, a_target, CP):
   """
@@ -80,8 +100,19 @@ class LongitudinalPlanner:
     self.events = Events()
     self.turn_speed_controller = TurnSpeedController()
     self.dynamic_experimental_controller = DynamicExperimentalController()
+    self.eco = self.params.get_bool("SubaruManualParkingBrakeSng") #斯巴鲁驻车作为eco开关
+    self.stock_long_toyota = self.params.get_bool("StockLongToyota")
+    self.vCluRatio = 1.0
+    self.v_cruise_kph = 0.0
+    self.disable_carrot = False
+    self.frame = 0
+    self.is_turning = False
+    self.turn_score = 0.0
+    self.turn_enable = False
 
   def read_param(self):
+    self.eco = self.params.get_bool("SubaruManualParkingBrakeSng")
+    self.stock_long_toyota = self.params.get_bool("StockLongToyota")
     try:
       self.dynamic_experimental_controller.set_enabled(self.params.get_bool("DynamicExperimentalControl"))
     except AttributeError:
@@ -103,7 +134,63 @@ class LongitudinalPlanner:
       j = np.zeros(len(T_IDXS_MPC))
     return x, v, a, j
 
-  def update(self, sm):
+  @staticmethod
+  def compute_turn_score(model, heading_thresh_rad=0.1, lateral_offset_thresh=1.5):
+    if (len(model.position.x) == ModelConstants.IDX_N and
+       len(model.position.y) == ModelConstants.IDX_N):
+      x = np.interp(T_IDXS_MPC, ModelConstants.T_IDXS, model.position.x)
+      y = np.interp(T_IDXS_MPC, ModelConstants.T_IDXS, model.position.y)
+    else:
+      x = np.zeros(len(T_IDXS_MPC))
+      y = np.zeros(len(T_IDXS_MPC))
+      return {
+        'score': 0,
+        'is_turning': False,
+        'max_heading_change': 0,
+        'max_lateral_offset': 0,
+      }
+
+    if len(x) != len(y):
+      return {
+        'score': 0,
+        'is_turning': False,
+        'max_heading_change': 0,
+        'max_lateral_offset': 0,
+      }
+
+    dt = DT_MDL
+    max_time = len(x) * dt
+    desired_time_steps = [0.5, 1.0, 1.5, 1.65]
+    time_steps = [t for t in desired_time_steps if t < max_time]
+
+    turn_score = 0.0
+    max_offset = 0.0
+    max_heading = 0.0
+    is_turning = False
+
+    for t in time_steps:
+      idx = int(t / dt)
+      dx = x[idx] - x[0]
+      dy = y[idx] - y[0]
+      heading_change = np.arctan2(dy, dx)
+      lateral_offset = abs(y[idx])
+
+      max_offset = max(max_offset, lateral_offset)
+      max_heading = max(max_heading, abs(heading_change))
+
+      if abs(heading_change) > heading_thresh_rad or lateral_offset > lateral_offset_thresh:
+        score = min(1.0, (abs(heading_change) / heading_thresh_rad + lateral_offset / lateral_offset_thresh) * 0.5)
+        turn_score = max(turn_score, score)
+        is_turning = True
+
+    return {
+      'score': np.clip(turn_score, 0.0, 1.0),
+      'is_turning': is_turning,
+      'max_heading_change': max_heading,
+      'max_lateral_offset': max_offset,
+    }
+
+  def update(self, sm, carrot):
     if self.param_read_counter % 50 == 0:
       self.read_param()
     self.param_read_counter += 1
@@ -115,6 +202,65 @@ class LongitudinalPlanner:
     v_ego = sm['carState'].vEgo
     v_cruise_kph = min(sm['controlsState'].vCruise, V_CRUISE_MAX)
     v_cruise = v_cruise_kph * CV.KPH_TO_MS
+    v_ego_kph = v_ego * CV.MS_TO_KPH
+
+    self.disable_carrot = False
+    car_state = sm['carState']
+    if not car_state.cruiseState.enabled:
+      self.disable_carrot = True
+
+    # === 新增：判断是否即将转弯 ===
+    self.turn_enable = True
+    if self.turn_enable:
+      model = sm['modelV2']
+      turn_info = self.compute_turn_score(model)
+      self.is_turning = turn_info['is_turning']
+      self.turn_score = turn_info['score']
+
+      if self.is_turning:
+        #print(f"[Turn] score: {self.turn_score:.2f}, heading_change: {np.degrees(turn_info['max_heading_change']):.1f}°, lateral_offset: {turn_info['max_lateral_offset']:.2f}m")
+
+        # 转弯评分大为0.4时，切换为 blended 模式
+        if self.turn_score > 0.4:
+          self.disable_carrot = True  # 转弯时关闭carrot功能，切换到sp的DEC自动模式
+    # === 新增：判断是否即将转弯 ===
+
+    #carrot
+    calib_v_cruise = True
+    if not self.disable_carrot: #没有禁用carrot时
+      if not carrot.blended_request: #无blended请求时
+        v_cruise = carrot.update(sm, v_cruise_kph, False)
+        calib_v_cruise = False
+        if not carrot.blended_request:
+          self.mpc.mode = carrot.mode
+          carrot.enable = True
+        else: #carrot在红车停车后切换到baended模式，则禁止carrot控制
+          carrot.enable = False
+      else:
+        if v_ego_kph > 6.0: #大于6km/h超过倒计时时间(3.0秒)后切换到carrot控制
+          if carrot.blended_count == 0:
+            carrot.xState = XState.e2ePrepare
+            carrot.blended_request = False
+            v_cruise = carrot.update(sm, v_cruise_kph, False)
+            calib_v_cruise = False
+            self.mpc.mode = carrot.mode
+            carrot.enable = True
+          else:
+            carrot.enable = False
+            carrot.update(sm, v_cruise_kph, True)
+          carrot.blended_count = max(0, carrot.blended_count - 1)  # 倒计时
+        else:
+          carrot.enable = False
+          carrot.update(sm, v_cruise_kph, True)
+    else:
+      carrot.enable = False
+      carrot.update(sm, v_cruise_kph, True)
+
+    if not carrot.enable and calib_v_cruise:
+      vCluRatio = sm['carState'].vCluRatio
+      if vCluRatio > 0.5:
+        self.vCluRatio = vCluRatio
+        v_cruise *= vCluRatio
 
     long_control_off = sm['controlsState'].longControlState == LongCtrlState.off
     force_slow_decel = sm['controlsState'].forceDecel
@@ -122,33 +268,57 @@ class LongitudinalPlanner:
     # Reset current state when not engaged, or user is controlling the speed
     reset_state = long_control_off if self.CP.openpilotLongitudinalControl else not sm['carControl'].hudControl.speedVisible
 
+    #fishsp add
+    # PCM cruise speed may be updated a few cycles later, check if initialized
+    v_cruise_initialized = sm['controlsState'].vCruise != V_CRUISE_UNSET
+    reset_state = reset_state or not v_cruise_initialized or carrot.soft_hold_active
+    # fishsp add
+
     # No change cost when user is controlling the speed, or when standstill
     prev_accel_constraint = not (reset_state or sm['carState'].standstill)
 
-    if self.mpc.mode == 'acc':
-      accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego)]
-      accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
-    else:
-      accel_limits = [ACCEL_MIN, ACCEL_MAX]
-      accel_limits_turns = [ACCEL_MIN, ACCEL_MAX]
+    # 获取加速度限制
+    accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego, self.eco)]
+    accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
+
+    #if self.mpc.mode == 'acc':
+    #  accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego, False)]
+    #  accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
+    #else:
+    #  accel_limits = [ACCEL_MIN, ACCEL_MAX]
+    #  accel_limits_turns = [ACCEL_MIN, ACCEL_MAX]
 
     if reset_state:
       self.v_desired_filter.x = v_ego
       # Clip aEgo to cruise limits to prevent large accelerations when becoming active
       self.a_desired = clip(sm['carState'].aEgo, accel_limits[0], accel_limits[1])
 
+      self.mpc.prev_a = np.full(N + 1, self.a_desired)  ## carrot
+      accel_limits_turns[0] = accel_limits_turns[0] = 0.0  ## carrot
+
     # Prevent divergence, smooth in current v_ego
     self.v_desired_filter.x = max(0.0, self.v_desired_filter.update(v_ego))
     # Compute model v_ego error
     self.v_model_error = get_speed_error(sm['modelV2'], v_ego)
+    x, v, a, j = self.parse_model(sm['modelV2'], self.v_model_error)
 
     if force_slow_decel:
       v_cruise = 0.0
 
     # Get active solutions for custom long mpc.
-    v_cruise = self.cruise_solutions(
+    v_cruise_limit = self.cruise_solutions(
       not reset_state and (self.CP.openpilotLongitudinalControl or not self.CP.pcmCruiseSpeed),
       self.v_desired_filter.x, self.a_desired, v_cruise, sm)
+
+    v_cruise_org = v_cruise
+    v_cruise =min(v_cruise_limit, v_cruise)
+
+    #打印调试信息
+    if self.frame % 4 == 0:
+      v_cruise_org_kph_show = v_cruise_org*CV.MS_TO_KPH
+      v_cruise_limit_kph_show = v_cruise_limit * CV.MS_TO_KPH
+      #print(f"traffic: {carrot.trafficState}, mode: {self.mpc.mode}, xState: {carrot.xState}")
+      #print(f"v_cruise: {v_cruise_org_kph_show:.2f}, v_cruise_limit: {v_cruise_limit_kph_show:.2f}, dist: {carrot.stop_dist:.2f}")
 
     # clip limits, cannot init MPC outside of bounds
     accel_limits_turns[0] = min(accel_limits_turns[0], self.a_desired + 0.05)
@@ -157,8 +327,7 @@ class LongitudinalPlanner:
     self.mpc.set_weights(prev_accel_constraint, personality=sm['controlsState'].personality)
     self.mpc.set_accel_limits(accel_limits_turns[0], accel_limits_turns[1])
     self.mpc.set_cur_state(self.v_desired_filter.x, self.a_desired)
-    x, v, a, j = self.parse_model(sm['modelV2'], self.v_model_error)
-    self.mpc.update(sm['radarState'], v_cruise, x, v, a, j, personality=sm['controlsState'].personality)
+    self.mpc.update(carrot, reset_state, sm['radarState'], v_cruise, x, v, a, j, personality=sm['controlsState'].personality)
 
     self.v_desired_trajectory_full = np.interp(ModelConstants.T_IDXS, T_IDXS_MPC, self.mpc.v_solution)
     self.a_desired_trajectory_full = np.interp(ModelConstants.T_IDXS, T_IDXS_MPC, self.mpc.a_solution)
@@ -177,6 +346,8 @@ class LongitudinalPlanner:
     self.v_desired_filter.x = self.v_desired_filter.x + self.dt * (self.a_desired + a_prev) / 2.0
 
     self.e2e_events(sm)
+
+    self.frame += 1
 
   def publish(self, sm, pm):
     plan_send = messaging.new_message('longitudinalPlan')

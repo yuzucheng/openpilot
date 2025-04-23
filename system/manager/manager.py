@@ -37,8 +37,9 @@ def manager_init() -> None:
     ("CompletedTrainingVersion", "0"),
     ("DisengageOnAccelerator", "0"),
     ("GsmMetered", "1"),
-    ("HasAcceptedTerms", "0"),
-    ("LanguageSetting", "main_en"),
+    ("IsMetric", "1"),
+    ("HasAcceptedTerms", "1"),
+    ("LanguageSetting", "main_zh-CHS"),
     ("OpenpilotEnabledToggle", "1"),
     ("LongitudinalPersonality", str(custom.LongitudinalPersonalitySP.standard)),
 
@@ -46,7 +47,7 @@ def manager_init() -> None:
     ("AutoLaneChangeTimer", "0"),
     ("AutoLaneChangeBsmDelay", "1"),
     ("BelowSpeedPause", "0"),
-    ("BrakeLights", "0"),
+    ("BrakeLights", "1"),
     ("BrightnessControl", "0"),
     ("CustomTorqueLateral", "0"),
     ("CameraControl", "2"),
@@ -67,7 +68,7 @@ def manager_init() -> None:
     ("EnhancedScc", "0"),
     ("FeatureStatus", "1"),
     ("HandsOnWheelMonitoring", "0"),
-    ("HasAcceptedTermsSP", "0"),
+    ("HasAcceptedTermsSP", "1"),
     ("HideVEgoUi", "0"),
     ("LastSpeedLimitSignTap", "0"),
     ("LkasToggle", "0"),
@@ -248,7 +249,7 @@ def manager_thread() -> None:
 
     running = ' '.join("{}{}\u001b[0m".format("\u001b[32m" if p.proc.is_alive() else "\u001b[31m", p.name)
                        for p in managed_processes.values() if p.proc)
-    print(running)
+    #print(running)
     cloudlog.debug(running)
 
     # send managerState
