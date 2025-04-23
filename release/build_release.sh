@@ -54,7 +54,6 @@ git branch --set-upstream-to=origin/$RELEASE_BRANCH
 
 # Build
 export PYTHONPATH="$BUILD_DIR"
-scons -c
 scons -j$(nproc)
 
 # release panda fw
