@@ -8,12 +8,12 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
 cd $DIR
 
-BUILD_DIR=/data/openpilot
+BUILD_DIR=/data/openpilot_release
 SOURCE_DIR="$(git rev-parse --show-toplevel)"
 
 if [ -z "$RELEASE_BRANCH" ]; then
   echo "RELEASE_BRANCH is not set"
-  exit 1
+  RELEASE_BRANCH=release-0971
 fi
 
 
@@ -27,8 +27,8 @@ mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 git init
 # set git username/password
-source /data/identity.sh
-git remote add origin https://github.com/sunnyhaibin/sunnypilot.git
+source $DIR/identity.sh
+git remote add origin git@github.com:fishsp/openpilot.git
 git fetch origin $RELEASE_BRANCH
 
 # do the files copy
@@ -54,10 +54,13 @@ git branch --set-upstream-to=origin/$RELEASE_BRANCH
 
 # Build
 export PYTHONPATH="$BUILD_DIR"
-scons -j$(nproc) --minimal
+scons -c
+scons -j$(nproc)
 
 # release panda fw
 scons -j$(nproc) panda/
+
+echo "compile done"
 
 # Ensure no submodules in release
 if test "$(git submodule--helper list | wc -l)" -gt "0"; then
@@ -90,6 +93,8 @@ git checkout third_party/
 # Mark as prebuilt release
 touch prebuilt
 
+echo "prebuilt done"
+
 # include source commit hash and build date in commit
 GIT_HASH=$(git --git-dir=$SOURCE_DIR/.git rev-parse HEAD)
 DATETIME=$(date '+%Y-%m-%dT%H:%M:%S')
@@ -98,7 +103,7 @@ SP_VERSION=$(cat $SOURCE_DIR/common/version.h | awk -F\" '{print $2}')
 # Add built files to git
 git add -f .
 git commit --amend -m "sunnypilot v$VERSION"
-git branch -m release-c3
+git branch -m $RELEASE_BRANCH
 
 # Run tests
 #TEST_FILES="tools/"
