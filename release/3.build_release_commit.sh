@@ -27,8 +27,8 @@ echo "#define COMMA_VERSION \"$VERSION-release\"" > common/version.h
 
 echo "[-] committing version $VERSION T=$SECONDS"
 git add -f .
-git commit -a -m "sunnypilot v$VERSION release"
-git branch --set-upstream-to=origin/$RELEASE_BRANCH
+git commit -a -m "sunnypilot v$VERSION release" || true
+git branch --set-upstream-to=origin/$RELEASE_BRANCH  || true
 
 # include source commit hash and build date in commit
 GIT_HASH=$(git --git-dir=$SOURCE_DIR/.git rev-parse HEAD)
