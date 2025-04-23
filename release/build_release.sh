@@ -28,7 +28,7 @@ cd $BUILD_DIR
 git init
 # set git username/password
 source $DIR/identity.sh
-git remote add origin git@github.com:fishsp/openpilot.git
+git remote add origin https://github.com/fishsp/openpilot.git
 git fetch origin $RELEASE_BRANCH
 
 # do the files copy
