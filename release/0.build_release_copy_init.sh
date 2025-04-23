@@ -54,6 +54,8 @@ git add -f .
 git commit -a -m "sunnypilot v$VERSION release"
 git branch --set-upstream-to=origin/$RELEASE_BRANCH
 
+scons -c
+
 # Ensure no submodules in release
 if test "$(git submodule--helper list | wc -l)" -gt "0"; then
   echo "submodules found:"
