@@ -29,7 +29,8 @@ git init
 # set git username/password
 source $DIR/identity.sh
 git remote add origin https://github.com/fishsp/openpilot.git
-git fetch origin $RELEASE_BRANCH
+#git fetch origin $RELEASE_BRANCH
+git fetch origin release-empty
 
 # do the files copy
 echo "[-] copying files T=$SECONDS"
