@@ -40,6 +40,8 @@ git add -f .
 git commit --amend -m "sunnypilot v$VERSION" || true
 git branch -m "$RELEASE_BRANCH" || true
 
+echo "GIT_SSH_COMMAND = $GIT_SSH_COMMAND"
+
 if [ ! -z "$RELEASE_BRANCH" ]; then
   echo "[-] pushing release T=$SECONDS"
   git push -f origin $RELEASE_BRANCH:$RELEASE_BRANCH

@@ -116,6 +116,8 @@ git branch -m $RELEASE_BRANCH
 #pytest selfdrive/car/tests/test_car_interfaces.py
 #rm -rf $TEST_FILES
 
+echo "GIT_SSH_COMMAND = $GIT_SSH_COMMAND"
+
 if [ ! -z "$RELEASE_BRANCH" ]; then
   echo "[-] pushing release T=$SECONDS"
   git push -f origin $RELEASE_BRANCH:$RELEASE_BRANCH
