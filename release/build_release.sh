@@ -51,7 +51,8 @@ echo "#define COMMA_VERSION \"$VERSION-release\"" > common/version.h
 echo "[-] committing version $VERSION T=$SECONDS"
 git add -f .
 git commit -a -m "sunnypilot v$VERSION release"
-git branch --set-upstream-to=origin/$RELEASE_BRANCH
+#git branch --set-upstream-to=origin/$RELEASE_BRANCH
+git branch --set-upstream-to=origin/release-empty
 
 # Build
 export PYTHONPATH="$BUILD_DIR"
