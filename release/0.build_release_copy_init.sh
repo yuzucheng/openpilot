@@ -29,7 +29,8 @@ git init
 # set git username/password
 source $DIR/identity.sh
 git remote add origin https://github.com/fishsp/openpilot.git
-git fetch origin $RELEASE_BRANCH
+#git fetch origin $RELEASE_BRANCH
+git fetch origin release-empty
 
 # do the files copy
 echo "[-] copying files T=$SECONDS"
@@ -52,7 +53,8 @@ echo "#define COMMA_VERSION \"$VERSION-release\"" > common/version.h
 echo "[-] committing version $VERSION T=$SECONDS"
 git add -f .
 git commit -a -m "sunnypilot v$VERSION release"
-git branch --set-upstream-to=origin/$RELEASE_BRANCH
+#git branch --set-upstream-to=origin/$RELEASE_BRANCH
+git branch --set-upstream-to=origin/release-empty
 
 scons -c
 
