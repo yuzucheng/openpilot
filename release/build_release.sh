@@ -56,10 +56,10 @@ git branch --set-upstream-to=origin/release-empty
 
 # Build
 export PYTHONPATH="$BUILD_DIR"
-scons -j$(nproc)
+scons -j$(nproc) --cache-disable
 
 # release panda fw
-scons -j$(nproc) panda/
+scons -j$(nproc) --cache-disable panda/
 
 echo "compile done"
 
