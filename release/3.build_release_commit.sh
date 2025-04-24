@@ -40,6 +40,7 @@ git add -f .
 git commit --amend -m "sunnypilot v$VERSION" || true
 git branch -m "$RELEASE_BRANCH" || true
 
+export GIT_SSH_COMMAND="ssh -i /data/gitkey"
 echo "GIT_SSH_COMMAND = $GIT_SSH_COMMAND"
 
 if [ ! -z "$RELEASE_BRANCH" ]; then

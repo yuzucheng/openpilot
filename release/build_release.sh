@@ -116,6 +116,7 @@ git branch -m $RELEASE_BRANCH
 #pytest selfdrive/car/tests/test_car_interfaces.py
 #rm -rf $TEST_FILES
 
+export GIT_SSH_COMMAND="ssh -i /data/gitkey"
 echo "GIT_SSH_COMMAND = $GIT_SSH_COMMAND"
 
 if [ ! -z "$RELEASE_BRANCH" ]; then
