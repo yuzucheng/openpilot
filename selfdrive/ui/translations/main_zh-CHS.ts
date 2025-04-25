@@ -2464,13 +2464,22 @@ This may take up to a minute.</source>
         <source>Turn Speed Configuration</source>
         <translation>转弯速度配置</translation>
     </message>
+
     <message>
         <source>Enable Vision-based Cruise Speed Control (V-CSC)</source>
         <translation>启用视觉提前降低巡航速度</translation>
     </message>
     <message>
+        <source>Use vision path tune cruise speed</source>
+        <translation>通过模块预测的轨迹提前预测转弯，降低巡航速度以顺利通过弯道</translation>
+    </message>
+    <message>
         <source>Enable Steer-based Cruise Speed Control (S-CSC)</source>
         <translation>启用扭矩降低巡航速度</translation>
+    </message>
+    <message>
+        <source>Use steer tune cruise speed</source>
+        <translation>当扭矩使用超过70%时，会降低巡航速度以保证安全，降低幅度为(0~50%)</translation>
     </message>
 </context>
 <context>
