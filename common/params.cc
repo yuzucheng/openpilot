@@ -331,6 +331,8 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"VwCCOnly", PERSISTENT | BACKUP},
     {"Offroad_ForceStatus", CLEAR_ON_MANAGER_START},
     {"Offroad_SupersededUpdate", PERSISTENT},
+    {"TurnVisionCruise", PERSISTENT | BACKUP},
+    {"SteerCruiseTune", PERSISTENT | BACKUP},
 
     {"SunnylinkCache_Users", PERSISTENT},
     {"SunnylinkCache_Roles", PERSISTENT},

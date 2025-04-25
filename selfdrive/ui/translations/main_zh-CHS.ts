@@ -1413,6 +1413,10 @@ This may take up to a minute.</source>
         <translation>sunnypilot</translation>
     </message>
     <message>
+        <source>UserFunc</source>
+        <translation>用户设置</translation>
+    </message>
+    <message>
         <source>OSM</source>
         <translation>OSM</translation>
     </message>
@@ -2452,6 +2456,21 @@ This may take up to a minute.</source>
     <message>
         <source>Formerly known as &lt;b&gt;&quot;NNFF&quot;&lt;/b&gt;, this replaces the lateral &lt;b&gt;&quot;torque&quot;&lt;/b&gt; controller with one using a neural network trained on each car&apos;s (actually, each separate EPS firmware) driving data for increased controls accuracy.</source>
         <translation>以前称为NNFF，代替了横向转矩控制器，使用在每辆车上训练的神经网络驱动数据，以提高控制精度。</translation>
+    </message>
+</context>
+<context>
+    <name>UserFuncPanel</name>
+    <message>
+        <source>Turn Speed Configuration</source>
+        <translation>转弯速度配置</translation>
+    </message>
+    <message>
+        <source>Enable Vision-based Cruise Speed Control (V-CSC)</source>
+        <translation>启用视觉提前降低巡航速度</translation>
+    </message>
+    <message>
+        <source>Enable Steer-based Cruise Speed Control (S-CSC)</source>
+        <translation>启用扭矩降低巡航速度</translation>
     </message>
 </context>
 <context>

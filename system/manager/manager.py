@@ -113,6 +113,8 @@ def manager_init() -> None:
     ("CustomDrivingModel", "0"),
     ("DrivingModelGeneration", "4"),
     ("LastSunnylinkPingTime", "0"),
+    ("TurnVisionCruise", "1"),
+    ("SteerCruiseTune", "1"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))

@@ -49,6 +49,8 @@ class VisionTurnController:
     self._op_enabled = False
     self._gas_pressed = False
     self._is_enabled = self._params.get_bool("TurnVisionControl")
+    self._is_turn_vision_cruise = self._params.get_bool("TurnVisionCruise")
+    self._is_steer_cruise_tune = self._params.get_bool("SteerCruiseTune")
     self._last_params_update = 0.
     self._v_ego = 0.
     self._v_target = MIN_TARGET_V
@@ -115,6 +117,8 @@ class VisionTurnController:
     t = time.monotonic()
     if t > self._last_params_update + PARAMS_UPDATE_PERIOD:
       self._is_enabled = self._params.get_bool("TurnVisionControl")
+      self._is_turn_vision_cruise = self._params.get_bool("TurnVisionCruise")
+      self._is_steer_cruise_tune = self._params.get_bool("SteerCruiseTune")
       self._last_params_update = t
 
   def calculate_margin_factor(self, max_pred_lat_acc):
@@ -245,8 +249,9 @@ class VisionTurnController:
           steer = abs(raw_steer)
           saturation_factor = self.get_steering_saturation_factor(steer)
           saturation_factor = min(saturation_factor, 1.0) #限制最大为1.0，防止下面的计算成为负数
-          self._soft_v_target_kmh_tmp *= (1.0 - saturation_factor)
-          self._v_target_tmp *= (1.0 - saturation_factor)
+          if self._is_steer_cruise_tune: #扭矩用于控制巡航速度
+            self._soft_v_target_kmh_tmp *= (1.0 - saturation_factor)
+            self._v_target_tmp *= (1.0 - saturation_factor)
         else:
           logger.log("[WARN] steer value invalid")
           print(f"[WARN] steer value invalid: {raw_steer}")
@@ -261,8 +266,13 @@ class VisionTurnController:
 
     #智能软限速逻辑的目标速度
     _soft_v_target = self._soft_v_target_kmh_tmp * CV.KPH_TO_MS #km/h速度换算成m/s
-    self._soft_v_target = max(_soft_v_target, MIN_TARGET_V)
-    soft_v_target_kmh = self._soft_v_target * CV.MS_TO_KPH
+    _soft_v_target = max(_soft_v_target, MIN_TARGET_V)
+    soft_v_target_kmh = _soft_v_target * CV.MS_TO_KPH
+
+    if self._is_turn_vision_cruise: #模型预测轨迹控制巡航速度
+      self._soft_v_target = _soft_v_target
+    else:
+      self._soft_v_target = 255.
 
     #调试信息打印
     if self.frame % 4 == 0:
