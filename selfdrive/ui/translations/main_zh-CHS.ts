@@ -2616,6 +2616,30 @@ This may take up to a minute.</source>
         <translation type="vanished">推荐使用标准模式。在积极模式中，openpilot 会更靠近前车并在加速和刹车方面更积极。在舒适模式中，openpilot 会与前车保持较远的距离。</translation>
     </message>
     <message>
+        <source>Sport</source>
+        <translation>运动</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>标准</translation>
+    </message>
+    <message>
+        <source>Eco</source>
+        <translation>节能</translation>
+    </message>
+    <message>
+        <source>Stock</source>
+        <translation>默认</translation>
+    </message>
+    <message>
+        <source>Acceleration Personality</source>
+        <translation>加速风格</translation>
+    </message>
+    <message>
+        <source>Normal is recommended. In sport mode, sunnypilot will provide aggressive acceleration for a dynamic driving experience. In eco mode, sunnypilot will apply smoother and more relaxed acceleration. On supported cars, you can cycle through these acceleration personality within Onroad Settings on the driving screen.</source>
+        <translation>推荐使用Normal模式。在sport模式下，sunnypilot将提供激进的加速，以实现动感驾驶体验。在eco模式下，sunnypilot将应用更平缓、更轻松的加速。在支持的车辆上，您可以在驾驶屏幕上的行车设置中循环切换这些加速个性。</translation>
+    </message>
+    <message>
         <source>An alpha version of openpilot longitudinal control can be tested, along with Experimental mode, on non-release branches.</source>
         <translation>在正式（release）版本以外的分支上，可以测试 openpilot 纵向控制的 Alpha 版本以及实验模式。</translation>
     </message>
