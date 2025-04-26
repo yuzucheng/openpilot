@@ -1,4 +1,4 @@
-from cereal import car
+from cereal import car, custom
 import cereal.messaging as messaging
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.numpy_fast import clip, interp
@@ -16,6 +16,7 @@ from openpilot.selfdrive.controls.lib.longitudinal_planner import get_max_accel,
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 LongCtrlState = car.CarControl.Actuators.LongControlState
+AccelPersonality = custom.AccelerationPersonality
 
 # EPS faults if you apply torque while the steering angle is above 90 degrees for more than 1 second
 # All slightly below EPS thresholds to avoid fault
@@ -83,7 +84,7 @@ class CarController(CarControllerBase):
     self.gasPressed = False
     self.gasPressed_last = False
     self.gas_change_smooth = False
-    sub_services = ['longitudinalPlan', 'longitudinalPlanSP', 'carState']
+    sub_services = ['longitudinalPlan', 'longitudinalPlanSP', 'carState', 'controlsStateSP']
     if CP.openpilotLongitudinalControl:
       sub_services.append('radarState')
     # TODO: Always true, prep for future conditional refactoring
@@ -123,9 +124,10 @@ class CarController(CarControllerBase):
     self.lead_distance = 0
     self.hkg_can_smooth_stop = self.param_s.get_bool("HkgSmoothStop")
     self.custom_stock_planner_speed = self.param_s.get_bool("CustomStockLongPlanner")
-    self.accel_eco = self.param_s.get_bool("SubaruManualParkingBrakeSng") #ECO加速模式
+    #self.accel_eco = self.param_s.get_bool("SubaruManualParkingBrakeSng") #ECO加速模式
     self.cruise_smooth_dis = self.param_s.get_bool("StockLongToyota") #巡航平滑
     self.custom_accel_limit = self.param_s.get_bool("LkasToggle") #用户限制加速度
+    self.accel_personality = AccelPersonality.stock
 
     self.jerk = 0.0
     self.jerk_l = 0.0
@@ -181,6 +183,9 @@ class CarController(CarControllerBase):
         self.v_tsc = self.sm['longitudinalPlanSP'].visionTurnSpeed
         self.m_tsc = self.sm['longitudinalPlanSP'].turnSpeed
 
+      if self.sm.updated['controlsStateSP']:
+        self.accel_personality = sm['controlsStateSP'].accelPersonality
+
       if self.frame % 200 == 0:
         self.speed_limit_control_enabled = self.param_s.get_bool("EnableSlc")
         self.is_metric = self.param_s.get_bool("IsMetric")
@@ -190,7 +195,7 @@ class CarController(CarControllerBase):
       self.v_target_plan = min(CC.vCruise * CV.KPH_TO_MS, self.speeds)
 
     if self.frame % 200 == 0:
-      self.accel_eco = self.param_s.get_bool("SubaruManualParkingBrakeSng")  # ECO加速模式
+      #self.accel_eco = self.param_s.get_bool("SubaruManualParkingBrakeSng")  # ECO加速模式
       self.cruise_smooth_dis = self.param_s.get_bool("StockLongToyota")  # 巡航平滑
       self.custom_accel_limit = self.param_s.get_bool("LkasToggle")  # 用户限制加速度
 
@@ -374,20 +379,20 @@ class CarController(CarControllerBase):
         eco_jerk_limit, eco_accel_limit = self.get_jerk_accel(speed, eco_accel_limits_tb)  # 根据速度查表并插值
 
       #根据模式选择加速度限制
-      if self.accel_eco:
+      if self.accel_personality == AccelPersonality.eco:
         if self.custom_accel_limit:
           accel_limit = eco_accel_limit
           jerk_limit = eco_jerk_limit
         else:
-          accel_limit = get_max_accel(speed, True)
-          jerk_limit = get_max_jerk(speed, True)
+          accel_limit = get_max_accel(speed, self.accel_personality)
+          jerk_limit = get_max_jerk(speed, self.accel_personality)
       else:
         if self.custom_accel_limit:
           accel_limit = stock_accel_limit
           jerk_limit = stock_jerk_limit
         else:
-          accel_limit = get_max_accel(speed, False)
-          jerk_limit = get_max_jerk(speed, False)
+          accel_limit = get_max_accel(speed, self.accel_personality)
+          jerk_limit = get_max_jerk(speed, self.accel_personality)
 
       # TEST
       if self.cruiseState_last != CS.out.cruiseState.enabled:

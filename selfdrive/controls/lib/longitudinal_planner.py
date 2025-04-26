@@ -3,7 +3,7 @@ import math
 import numpy as np
 from openpilot.common.numpy_fast import clip, interp
 from openpilot.common.params import Params
-from cereal import car
+from cereal import car, custom
 
 import cereal.messaging as messaging
 from openpilot.common.conversions import Conversions as CV
@@ -33,12 +33,14 @@ A_CRUISE_MIN = -2.5 #-1.2
 
 #A_CRUISE_MAX_VALS = [1.4, 1.4,  1.4,  1.2,  1.0,   0.9,   0.8,   0.7,   0.6,  .53,  .42,  .13]
 #A_CRUISE_ECO_VALS = [1.2, 1.2,  1.2,  1.1,  1.0,   0.85,  0.7,   0.65,  0.5,  .43,  .32,  .088]
-A_CRUISE_MAX_VALS = [1.6, 1.6,  1.6,  1.4,  1.0,   0.9,   0.8,   0.7,   0.6,  .53,  .42,  .13]
-A_CRUISE_ECO_VALS = [1.4, 1.4,  1.4,  1.2,  1.0,   0.9,   0.8,   0.7,   0.6,  .53,  .42,  .13]
-A_JERK_MAX_VALS =   [0.4, 0.6,  0.6,  0.8,  0.8,   0.8,   0.7,   0.6,   0.5,   0.4,  0.2,   0.1] # ½öÔÚÆô¶¯Ñ²º½Ê±Æ½»¬ÓÃ
-A_JERK_ECO_VALS =   [0.3, 0.5,  0.5,  0.5,  0.4,   0.4,   0.3,   0.2,   0.2,   0.2,  0.2,   0.1]
-A_CRUISE_MAX_BP =   [0.,  2.78, 5.56, 8.33, 11.11, 13.33, 15.55, 17.78, 22.22, 25.,  27.8,  55.6]
-#            km/h    0    10    20    30    40     50     60     70     80     90    100    200
+A_CRUISE_SPORT_VALS =   [1.8, 1.8,  1.4,  1.3,  1.2,   1.1,   1.0,   1.0,   .95,   .90, .70,  .5]
+A_CRUISE_MAX_VALS =     [1.6, 1.6,  1.3,  1.2,  1.1,   0.9,   0.8,   0.7,   0.6,  .53,  .42,  .2]
+A_CRUISE_NORMAL_VALS =  [1.4, 1.4,  1.3,  1.2,  1.0,   0.9,   0.8,   0.7,   0.6,  .50,  .40,  .15]
+A_CRUISE_ECO_VALS =     [1.2, 1.2,  1.2,  1.0,  1.0,   0.8,   0.7,   0.6,   0.5,  .40,  .30,  .13]
+A_JERK_MAX_VALS =       [0.4, 0.6,  0.6,  0.8,  0.8,   0.8,   0.7,   0.6,   0.5,   0.4,  0.2,   0.1] # ä»…åœ¨å¯åŠ¨å·¡èˆªæ—¶å¹³æ»‘ç”¨
+A_JERK_ECO_VALS =       [0.3, 0.5,  0.5,  0.5,  0.4,   0.4,   0.3,   0.2,   0.2,   0.2,  0.2,   0.1]
+A_CRUISE_MAX_BP =       [0.,  2.78, 5.56, 8.33, 11.11, 13.33, 15.55, 17.78, 22.22, 25.,  27.8,  55.6]
+#            km/h        0    10    20    30    40     50     60     70     80     90    100    200
 
 # Lookup table for turns
 _A_TOTAL_MAX_V = [1.7, 3.2]
@@ -46,16 +48,20 @@ _A_TOTAL_MAX_BP = [20., 40.]
 
 
 EventName = car.CarEvent.EventName
+AccelPersonality = custom.AccelerationPersonality
 
-
-def get_max_accel(v_ego, eco):
-  if eco:
+def get_max_accel(v_ego, accel_personality):
+  if accel_personality == AccelPersonality.eco:
     return interp(v_ego, A_CRUISE_MAX_BP, A_CRUISE_ECO_VALS)
+  elif accel_personality == AccelPersonality.normal:
+    return interp(v_ego, A_CRUISE_MAX_BP, A_CRUISE_NORMAL_VALS)
+  elif accel_personality == AccelPersonality.sport:
+    return interp(v_ego, A_CRUISE_MAX_BP, A_CRUISE_SPORT_VALS)
   else:
     return interp(v_ego, A_CRUISE_MAX_BP, A_CRUISE_MAX_VALS)
 
-def get_max_jerk(v_ego, eco):
-  if eco:
+def get_max_jerk(v_ego, accel_personality):
+  if accel_personality == AccelPersonality.eco:
     return interp(v_ego, A_CRUISE_MAX_BP, A_JERK_ECO_VALS)
   else:
     return interp(v_ego, A_CRUISE_MAX_BP, A_JERK_MAX_VALS)
@@ -100,7 +106,7 @@ class LongitudinalPlanner:
     self.events = Events()
     self.turn_speed_controller = TurnSpeedController()
     self.dynamic_experimental_controller = DynamicExperimentalController()
-    self.eco = self.params.get_bool("SubaruManualParkingBrakeSng") #Ë¹°ÍÂ³×¤³µ×÷Îªeco¿ª¹Ø
+    self.eco = self.params.get_bool("SubaruManualParkingBrakeSng") #æ–¯å·´é²é©»è½¦ä½œä¸ºecoå¼€å…³
     self.stock_long_toyota = self.params.get_bool("StockLongToyota")
     self.vCluRatio = 1.0
     self.v_cruise_kph = 0.0
@@ -209,7 +215,7 @@ class LongitudinalPlanner:
     if not car_state.cruiseState.enabled:
       self.disable_carrot = True
 
-    # === ĞÂÔö£ºÅĞ¶ÏÊÇ·ñ¼´½«×ªÍä ===
+    # === æ–°å¢ï¼šåˆ¤æ–­æ˜¯å¦å³å°†è½¬å¼¯ ===
     self.turn_enable = True
     if self.turn_enable:
       model = sm['modelV2']
@@ -218,26 +224,26 @@ class LongitudinalPlanner:
       self.turn_score = turn_info['score']
 
       if self.is_turning:
-        #print(f"[Turn] score: {self.turn_score:.2f}, heading_change: {np.degrees(turn_info['max_heading_change']):.1f}¡ã, lateral_offset: {turn_info['max_lateral_offset']:.2f}m")
+        #print(f"[Turn] score: {self.turn_score:.2f}, heading_change: {np.degrees(turn_info['max_heading_change']):.1f}Â°, lateral_offset: {turn_info['max_lateral_offset']:.2f}m")
 
-        # ×ªÍäÆÀ·Ö´óÎª0.4Ê±£¬ÇĞ»»Îª blended Ä£Ê½
+        # è½¬å¼¯è¯„åˆ†å¤§ä¸º0.4æ—¶ï¼Œåˆ‡æ¢ä¸º blended æ¨¡å¼
         if self.turn_score > 0.4:
-          self.disable_carrot = True  # ×ªÍäÊ±¹Ø±Õcarrot¹¦ÄÜ£¬ÇĞ»»µ½spµÄDEC×Ô¶¯Ä£Ê½
-    # === ĞÂÔö£ºÅĞ¶ÏÊÇ·ñ¼´½«×ªÍä ===
+          self.disable_carrot = True  # è½¬å¼¯æ—¶å…³é—­carrotåŠŸèƒ½ï¼Œåˆ‡æ¢åˆ°spçš„DECè‡ªåŠ¨æ¨¡å¼
+    # === æ–°å¢ï¼šåˆ¤æ–­æ˜¯å¦å³å°†è½¬å¼¯ ===
 
     #carrot
     calib_v_cruise = True
-    if not self.disable_carrot: #Ã»ÓĞ½ûÓÃcarrotÊ±
-      if not carrot.blended_request: #ÎŞblendedÇëÇóÊ±
+    if not self.disable_carrot: #æ²¡æœ‰ç¦ç”¨carrotæ—¶
+      if not carrot.blended_request: #æ— blendedè¯·æ±‚æ—¶
         v_cruise = carrot.update(sm, v_cruise_kph, False)
         calib_v_cruise = False
         if not carrot.blended_request:
           self.mpc.mode = carrot.mode
           carrot.enable = True
-        else: #carrotÔÚºì³µÍ£³µºóÇĞ»»µ½baendedÄ£Ê½£¬Ôò½ûÖ¹carrot¿ØÖÆ
+        else: #carrotåœ¨çº¢è½¦åœè½¦ååˆ‡æ¢åˆ°baendedæ¨¡å¼ï¼Œåˆ™ç¦æ­¢carrotæ§åˆ¶
           carrot.enable = False
       else:
-        if v_ego_kph > 6.0: #´óÓÚ6km/h³¬¹ıµ¹¼ÆÊ±Ê±¼ä(3.0Ãë)ºóÇĞ»»µ½carrot¿ØÖÆ
+        if v_ego_kph > 6.0: #å¤§äº6km/hè¶…è¿‡å€’è®¡æ—¶æ—¶é—´(3.0ç§’)ååˆ‡æ¢åˆ°carrotæ§åˆ¶
           if carrot.blended_count == 0:
             carrot.xState = XState.e2ePrepare
             carrot.blended_request = False
@@ -248,7 +254,7 @@ class LongitudinalPlanner:
           else:
             carrot.enable = False
             carrot.update(sm, v_cruise_kph, True)
-          carrot.blended_count = max(0, carrot.blended_count - 1)  # µ¹¼ÆÊ±
+          carrot.blended_count = max(0, carrot.blended_count - 1)  # å€’è®¡æ—¶
         else:
           carrot.enable = False
           carrot.update(sm, v_cruise_kph, True)
@@ -277,8 +283,9 @@ class LongitudinalPlanner:
     # No change cost when user is controlling the speed, or when standstill
     prev_accel_constraint = not (reset_state or sm['carState'].standstill)
 
-    # »ñÈ¡¼ÓËÙ¶ÈÏŞÖÆ
-    accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego, self.eco)]
+    # è·å–åŠ é€Ÿåº¦é™åˆ¶
+    accel_personality = sm['controlsStateSP'].accelPersonality
+    accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego, accel_personality)]
     accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
 
     #if self.mpc.mode == 'acc':
@@ -313,7 +320,7 @@ class LongitudinalPlanner:
     v_cruise_org = v_cruise
     v_cruise =min(v_cruise_limit, v_cruise)
 
-    #´òÓ¡µ÷ÊÔĞÅÏ¢
+    #æ‰“å°è°ƒè¯•ä¿¡æ¯
     if self.frame % 4 == 0:
       v_cruise_org_kph_show = v_cruise_org*CV.MS_TO_KPH
       v_cruise_limit_kph_show = v_cruise_limit * CV.MS_TO_KPH
