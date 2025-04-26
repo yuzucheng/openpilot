@@ -2471,7 +2471,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Use vision path tune cruise speed</source>
-        <translation>通过模块预测的轨迹提前预测转弯，降低巡航速度以顺利通过弯道</translation>
+        <translation>通过模型预测的轨迹提前预测转弯，降低巡航速度以顺利通过弯道</translation>
     </message>
     <message>
         <source>Enable Steer-based Cruise Speed Control (S-CSC)</source>
@@ -2629,7 +2629,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Stock</source>
-        <translation>默认</translation>
+        <translation>Stock</translation>
     </message>
     <message>
         <source>Acceleration Personality</source>
@@ -2637,7 +2637,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Normal is recommended. In sport mode, sunnypilot will provide aggressive acceleration for a dynamic driving experience. In eco mode, sunnypilot will apply smoother and more relaxed acceleration. On supported cars, you can cycle through these acceleration personality within Onroad Settings on the driving screen.</source>
-        <translation>推荐使用Normal模式。在sport模式下，sunnypilot将提供激进的加速，以实现动感驾驶体验。在eco模式下，sunnypilot将应用更平缓、更轻松的加速。在支持的车辆上，您可以在驾驶屏幕上的行车设置中循环切换这些加速个性。</translation>
+        <translation>推荐使用标准模式。在运动模式下，sunnypilot将提供激进的加速，以实现动感驾驶体验。在节能模式下，sunnypilot将应用更平缓、更轻松的加速。在支持的车辆上，您可以在驾驶屏幕上的行车设置中循环切换这些加速个性。</translation>
     </message>
     <message>
         <source>An alpha version of openpilot longitudinal control can be tested, along with Experimental mode, on non-release branches.</source>
