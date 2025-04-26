@@ -2,7 +2,7 @@
 set -e
 set -x
 
-BUILD_DIR=/data/openpilot_release
+BUILD_DIR=/data/openpilot
 
 # in the directory
 cd $BUILD_DIR

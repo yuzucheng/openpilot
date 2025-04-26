@@ -2,7 +2,7 @@
 set -e
 set -x
 
-BUILD_DIR=/data/openpilot_release
+BUILD_DIR=/data/openpilot
 cd $BUILD_DIR
 
 # Cleanup

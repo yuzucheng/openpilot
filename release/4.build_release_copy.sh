@@ -2,7 +2,7 @@
 set -e
 set -x
 
-BUILD_DIR=/data/openpilot_release
+BUILD_DIR=/data/openpilot
 SOURCE_DIR="$(git rev-parse --show-toplevel)"
 
 # do the files copy
