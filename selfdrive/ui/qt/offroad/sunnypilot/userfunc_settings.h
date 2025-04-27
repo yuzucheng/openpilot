@@ -16,6 +16,16 @@ private:
   Params params;
 };
 
+class CruiseOnDist : public SPOptionControl {
+  Q_OBJECT
+
+public:
+  CruiseOnDist();
+  void refresh();
+private:
+  Params params;
+};
+
 class ComfortBrake : public SPOptionControl {
   Q_OBJECT
 

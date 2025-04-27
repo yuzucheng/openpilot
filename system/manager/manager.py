@@ -124,6 +124,8 @@ def manager_init() -> None:
     ("EnhanceTrafficLight", "1"),
     ("CruiseSmooth", "1"),
     ("UserAccelTable", "0"),
+    ("AutoCruise", "0"),
+    ("CruiseOnDist", "6"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
