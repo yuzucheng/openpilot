@@ -109,21 +109,38 @@ class CarInterface(CarInterfaceBase):
     ret.stoppingControl = True
     ret.startingState = True
     ret.vEgoStarting = 0.1
-    accel_personality = AccelPersonality.stock
-    val = params.get("AccelPersonality")
-    if val is not None:
-      try:
-        accel_personality = int(val)
-      except ValueError:
-        accel_personality = AccelPersonality.stock
-    if accel_personality == AccelPersonality.eco:
-      ret.startAccel = 0.6
-    elif accel_personality == AccelPersonality.normal:
-      ret.startAccel = 0.8
-    elif accel_personality == AccelPersonality.sport:
-      ret.startAccel = 1.2
-    else: #stock
-      ret.startAccel = 1.0
+
+    #startAccel = 0
+    #vEgoStopping = 0.5
+    try:
+      val = Params().get("vEgoStopping")
+      vEgoStopping = float(val)/10 if val is not None and val != b'' else 0.5
+      val = Params().get("StartAccel")
+      startAccel = float(val) / 10 if val is not None and val != b'' else 0
+    except AttributeError:
+      startAccel = 0
+      vEgoStopping = 0.5
+
+    ret.vEgoStopping = vEgoStopping
+
+    if startAccel < 0.1:
+      accel_personality = AccelPersonality.stock
+      val = params.get("AccelPersonality")
+      if val is not None:
+        try:
+          accel_personality = int(val)
+        except ValueError:
+          accel_personality = AccelPersonality.stock
+      if accel_personality == AccelPersonality.eco:
+        ret.startAccel = 0.6
+      elif accel_personality == AccelPersonality.normal:
+        ret.startAccel = 0.8
+      elif accel_personality == AccelPersonality.sport:
+        ret.startAccel = 1.2
+      else: #stock
+        ret.startAccel = 1.0
+    else:
+      ret.startAccel = startAccel
     ret.longitudinalActuatorDelayLowerBound = 0.5
     ret.longitudinalActuatorDelayUpperBound = 0.5
 
@@ -201,8 +218,8 @@ class CarInterface(CarInterfaceBase):
     if 0x2AA in fingerprint[0]:
       ret.minSteerSpeed = 0.
 
-    if Params().get_bool("HkgSmoothStop"):
-      ret.vEgoStopping = 0.1
+    #if Params().get_bool("HkgSmoothStop"):
+    #  ret.vEgoStopping = 0.1
 
     return ret
 

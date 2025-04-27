@@ -116,6 +116,11 @@ def manager_init() -> None:
     ("LastSunnylinkPingTime", "0"),
     ("TurnVisionCruise", "1"),
     ("SteerCruiseTune", "1"),
+
+    ("StopDistance", "60"),
+    ("ComfortBrake", "24"),
+    ("StartAccel", "8"),
+    ("vEgoStopping", "5"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))

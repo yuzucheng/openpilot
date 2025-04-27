@@ -6,6 +6,46 @@
 #include "selfdrive/ui/qt/widgets/controls.h"
 #include "selfdrive/ui/qt/widgets/scrollview.h"
 
+class StopDistance : public SPOptionControl {
+  Q_OBJECT
+
+public:
+  StopDistance();
+  void refresh();
+private:
+  Params params;
+};
+
+class ComfortBrake : public SPOptionControl {
+  Q_OBJECT
+
+public:
+  ComfortBrake();
+  void refresh();
+private:
+  Params params;
+};
+
+class StartAccel : public SPOptionControl {
+  Q_OBJECT
+
+public:
+  StartAccel();
+  void refresh();
+private:
+  Params params;
+};
+
+class vEgoStopping : public SPOptionControl {
+  Q_OBJECT
+
+public:
+  vEgoStopping();
+  void refresh();
+private:
+  Params params;
+};
+
 class UserFuncPanel : public QFrame {
   Q_OBJECT
 
@@ -24,4 +64,9 @@ private:
   std::map<std::string, ParamControl*> toggles;
   ParamWatcher *param_watcher;
   ScrollView *scrollView = nullptr;
+
+  StopDistance *stop_distance;
+  ComfortBrake *comfort_break;
+  StartAccel *start_accel;
+  vEgoStopping *vego_stopping;
 };

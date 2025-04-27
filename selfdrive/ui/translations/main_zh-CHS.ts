@@ -2464,7 +2464,6 @@ This may take up to a minute.</source>
         <source>Turn Speed Configuration</source>
         <translation>转弯速度配置</translation>
     </message>
-
     <message>
         <source>Enable Vision-based Cruise Speed Control (V-CSC)</source>
         <translation>启用视觉提前降低巡航速度</translation>
@@ -2480,6 +2479,30 @@ This may take up to a minute.</source>
     <message>
         <source>Use steer tune cruise speed</source>
         <translation>当扭矩使用超过70%时，会降低巡航速度以保证安全，降低幅度为(0~50%)</translation>
+    </message>
+    <message>
+        <source>Stop Distance</source>
+        <translation>停车距离</translation>
+    </message>
+    <message>
+        <source>Comfort Brake</source>
+        <translation>刹车减速度</translation>
+    </message>
+    <message>
+        <source>ComfortBrake</source>
+        <translation>刹车减速度</translation>
+    </message>
+    <message>
+        <source>Start Accel</source>
+        <translation>起步加速度</translation>
+    </message>
+    <message>
+        <source>vEgoStopping</source>
+        <translation>停车速度</translation>
+    </message>
+    <message>
+        <source>Auto</source>
+        <translation>自动</translation>
     </message>
 </context>
 <context>

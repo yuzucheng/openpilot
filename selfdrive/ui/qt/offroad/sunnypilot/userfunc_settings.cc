@@ -30,6 +30,29 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   // 添加分割线
   list->addItem(horizontal_line());
 
+  list->addItem(new LabelControl(tr("Stop Distance")));
+
+  stop_distance = new StopDistance();
+  connect(stop_distance, &SPOptionControl::updateLabels, stop_distance, &StopDistance::refresh);
+  list->addItem(stop_distance);
+
+  list->addItem(new LabelControl(tr("Comfort Brake")));
+  comfort_break = new ComfortBrake();
+  connect(comfort_break, &SPOptionControl::updateLabels, comfort_break, &ComfortBrake::refresh);
+  list->addItem(comfort_break);
+
+  list->addItem(new LabelControl(tr("Start Accel")));
+  start_accel = new StartAccel();
+  connect(start_accel, &SPOptionControl::updateLabels, start_accel, &StartAccel::refresh);
+  list->addItem(start_accel);
+
+  list->addItem(new LabelControl(tr("vEgoStopping")));
+  vego_stopping = new vEgoStopping();
+  connect(vego_stopping, &SPOptionControl::updateLabels, vego_stopping, &vEgoStopping::refresh);
+  list->addItem(vego_stopping);
+
+  list->addItem(horizontal_line());
+
   //list->addItem(new LabelControl(tr("User Configuration2")));
 
   /*
@@ -95,3 +118,101 @@ void UserFuncPanel::updateToggles() {
     //v_tvs->setEnabled(false);
   }
 }
+
+StopDistance::StopDistance() : SPOptionControl(
+  "StopDistance",
+  "",
+  tr("Stop Distance value."),
+  "../assets/offroad/icon_blank.png",
+  {10, 200},
+  1) {
+
+  refresh();
+}
+
+void StopDistance::refresh() {
+  QString option = QString:: fromStdString(params.get("StopDistance"));
+  bool ok;
+  int int_value = option.toInt(&ok);
+  if (ok) {
+    double real_value = int_value / 10.0;  // 假设是除以10
+    setLabel(QString::number(real_value, 'f', 1) + " m");  // 保留1位小数
+  } else {
+    setLabel(option + " m");  // 如果转换失败，直接显示原值
+  }
+}
+
+ComfortBrake::ComfortBrake() : SPOptionControl(
+  "ComfortBrake",
+  "",
+  tr("Comfort Break Setting."),
+  "../assets/offroad/icon_blank.png",
+  {5, 50},
+  1) {
+
+  refresh();
+}
+
+void ComfortBrake::refresh() {
+  QString option = QString:: fromStdString(params.get("ComfortBrake"));
+  bool ok;
+  int int_value = option.toInt(&ok);
+  if (ok) {
+    double real_value = int_value / 10.0;  // 假设是除以10
+    setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
+  } else {
+    setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
+  }
+}
+
+StartAccel::StartAccel() : SPOptionControl(
+  "StartAccel",
+  "",
+  tr("StartAccel"),
+  "../assets/offroad/icon_blank.png",
+  {0, 20},
+  1) {
+
+  refresh();
+}
+
+void StartAccel::refresh() {
+  QString option = QString::fromStdString(params.get("StartAccel"));
+  bool ok;
+  int int_value = option.toInt(&ok);
+  if (ok) {
+    if(int_value > 0){
+      double real_value = int_value / 10.0;  // 假设是除以10
+      setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
+    }
+    else{
+      setLabel(tr("Auto"));
+    }
+  } else {
+    setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
+  }
+}
+
+vEgoStopping::vEgoStopping() : SPOptionControl(
+  "vEgoStopping",
+  "",
+  tr("vEgoStopping"),
+  "../assets/offroad/icon_blank.png",
+  {1, 10},
+  1) {
+
+  refresh();
+}
+
+void vEgoStopping::refresh() {
+  QString option = QString::fromStdString(params.get("vEgoStopping"));
+  bool ok;
+  int int_value = option.toInt(&ok);
+  if (ok) {
+    double real_value = int_value / 10.0;
+    setLabel(QString::number(real_value, 'f', 1) + " m/s^2");
+  } else {
+    setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
+  }
+}
+
