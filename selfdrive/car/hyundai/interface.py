@@ -1,4 +1,4 @@
-from cereal import car
+from cereal import car, custom
 from panda import Panda
 from openpilot.common.params import Params
 from openpilot.selfdrive.car.hyundai.enable_radar_tracks import enable_radar_tracks
@@ -18,6 +18,7 @@ GearShifter = car.CarState.GearShifter
 ENABLE_BUTTONS = (Buttons.RES_ACCEL, Buttons.SET_DECEL, Buttons.CANCEL)
 BUTTONS_DICT = {Buttons.RES_ACCEL: ButtonType.accelCruise, Buttons.SET_DECEL: ButtonType.decelCruise,
                 Buttons.GAP_DIST: ButtonType.gapAdjustCruise, Buttons.CANCEL: ButtonType.cancel}
+AccelPersonality = custom.AccelerationPersonality
 
 
 class CarInterface(CarInterfaceBase):
@@ -108,10 +109,21 @@ class CarInterface(CarInterfaceBase):
     ret.stoppingControl = True
     ret.startingState = True
     ret.vEgoStarting = 0.1
-    if Params().get_bool("SubaruManualParkingBrakeSng"): #ECOģʽ
+    accel_personality = AccelPersonality.stock
+    val = params.get("AccelPersonality")
+    if val is not None:
+      try:
+        accel_personality = int(val)
+      except ValueError:
+        accel_personality = AccelPersonality.stock
+    if accel_personality == AccelPersonality.eco:
       ret.startAccel = 0.6
-    else:
+    elif accel_personality == AccelPersonality.normal:
       ret.startAccel = 0.8
+    elif accel_personality == AccelPersonality.sport:
+      ret.startAccel = 1.2
+    else: #stock
+      ret.startAccel = 1.0
     ret.longitudinalActuatorDelayLowerBound = 0.5
     ret.longitudinalActuatorDelayUpperBound = 0.5
 
