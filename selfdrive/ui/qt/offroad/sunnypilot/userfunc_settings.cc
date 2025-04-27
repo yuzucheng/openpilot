@@ -53,21 +53,37 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
 
   list->addItem(horizontal_line());
 
-  //list->addItem(new LabelControl(tr("User Configuration2")));
+  auto toggle_traffic_light = new ParamControl(
+    "EnhanceTrafficLight",
+    tr("Enhance trafficLight"),
+    tr("Enable the Enhance trafficLight function"),
+    "../assets/offroad/icon_blank.png",
+    this
+  );
+  list->addItem(toggle_traffic_light);
+  toggles["EnhanceTrafficLight"] = toggle_traffic_light;
 
-  /*
-  list->addItem(new LabelControl(tr("User Configuration2")));
-  list->addItem(horizontal_line());
+  auto cruise_smooth = new ParamControl(
+    "CruiseSmooth",
+    tr("Cruise Smooth"),
+    tr("Smooth the accel when starting the cruise"),
+    "../assets/offroad/icon_blank.png",
+    this
+  );
+  list->addItem(cruise_smooth);
+  toggles["CruiseSmooth"] = cruise_smooth;
 
-  list->addItem(new LabelControl(tr("User Configuration3)));
-  list->addItem(horizontal_line());
+  auto user_accel_tb = new ParamControl(
+    "UserAccelTable",
+    tr("User accel limit table"),
+    tr("Using the user accel limit table"),
+    "../assets/offroad/icon_blank.png",
+    this
+  );
+  list->addItem(user_accel_tb);
+  toggles["UserAccelTable"] = user_accel_tb;
 
-  list->addItem(new LabelControl(tr("User Configuration4")));
   list->addItem(horizontal_line());
-
-  list->addItem(new LabelControl(tr("User Configuration5")));
-  list->addItem(horizontal_line());
-  */
 
   param_watcher = new ParamWatcher(this);
   QObject::connect(param_watcher, &ParamWatcher::paramChanged, [=](const QString &param_name, const QString &param_value) {
@@ -210,9 +226,9 @@ void vEgoStopping::refresh() {
   int int_value = option.toInt(&ok);
   if (ok) {
     double real_value = int_value / 10.0;
-    setLabel(QString::number(real_value, 'f', 1) + " m/s^2");
+    setLabel(QString::number(real_value, 'f', 1) + " m/s");
   } else {
-    setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
+    setLabel(option+ " m/s");  // 如果转换失败，直接显示原值
   }
 }
 

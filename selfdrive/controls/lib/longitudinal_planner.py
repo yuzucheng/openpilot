@@ -106,8 +106,6 @@ class LongitudinalPlanner:
     self.events = Events()
     self.turn_speed_controller = TurnSpeedController()
     self.dynamic_experimental_controller = DynamicExperimentalController()
-    self.eco = self.params.get_bool("SubaruManualParkingBrakeSng") #斯巴鲁驻车作为eco开关
-    self.stock_long_toyota = self.params.get_bool("StockLongToyota")
     self.vCluRatio = 1.0
     self.v_cruise_kph = 0.0
     self.disable_carrot = False
@@ -115,10 +113,10 @@ class LongitudinalPlanner:
     self.is_turning = False
     self.turn_score = 0.0
     self.turn_enable = False
+    self.enhance_traffic = True
 
   def read_param(self):
-    self.eco = self.params.get_bool("SubaruManualParkingBrakeSng")
-    self.stock_long_toyota = self.params.get_bool("StockLongToyota")
+    self.enhance_traffic = self.params.get_bool("EnhanceTrafficLight")
     try:
       self.dynamic_experimental_controller.set_enabled(self.params.get_bool("DynamicExperimentalControl"))
     except AttributeError:
@@ -212,6 +210,9 @@ class LongitudinalPlanner:
 
     self.disable_carrot = False
     car_state = sm['carState']
+
+    if not self.enhance_traffic: #未开启红绿灯增强功能
+      self.disable_carrot = True
     if not car_state.cruiseState.enabled:
       self.disable_carrot = True
 

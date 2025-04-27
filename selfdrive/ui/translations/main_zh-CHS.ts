@@ -2504,6 +2504,30 @@ This may take up to a minute.</source>
         <source>Auto</source>
         <translation>自动</translation>
     </message>
+    <message>
+        <source>Enhance trafficLight</source>
+        <translation>开启红绿灯增强功能</translation>
+    </message>
+    <message>
+        <source>Enable the Enhance trafficLight function</source>
+        <translation>打开此选项后将启用红绿灯增强功能，能更好的停在停止线内</translation>
+    </message>
+    <message>
+        <source>Cruise Smooth</source>
+        <translation>开始巡航时平滑</translation>
+    </message>
+    <message>
+        <source>Smooth the accel when starting the cruise</source>
+        <translation>开启此设置后，在用户刚开启巡航功能的时候，将会对加速度进行平滑</translation>
+    </message>
+    <message>
+        <source>User accel limit table</source>
+        <translation>开启用户加速度限制表</translation>
+    </message>
+    <message>
+        <source>Using the user accel limit table</source>
+        <translation>开启此选项后，将会启动用户写在代码里面的最大加速度限制表，用户可以对各个速度点的最大加速度进行限制</translation>
+    </message>
 </context>
 <context>
     <name>TermsPage</name>

@@ -124,9 +124,8 @@ class CarController(CarControllerBase):
     self.lead_distance = 0
     self.hkg_can_smooth_stop = self.param_s.get_bool("HkgSmoothStop")
     self.custom_stock_planner_speed = self.param_s.get_bool("CustomStockLongPlanner")
-    #self.accel_eco = self.param_s.get_bool("SubaruManualParkingBrakeSng") #ECO加速模式
-    self.cruise_smooth_dis = self.param_s.get_bool("StockLongToyota") #巡航平滑
-    self.custom_accel_limit = self.param_s.get_bool("LkasToggle") #用户限制加速度
+    self.cruise_smooth = self.param_s.get_bool("CruiseSmooth") #巡航平滑
+    self.custom_accel_limit = self.param_s.get_bool("UserAccelTable") #用户限制加速度
     self.accel_personality = AccelPersonality.stock
 
     self.jerk = 0.0
@@ -195,9 +194,8 @@ class CarController(CarControllerBase):
       self.v_target_plan = min(CC.vCruise * CV.KPH_TO_MS, self.speeds)
 
     if self.frame % 200 == 0:
-      #self.accel_eco = self.param_s.get_bool("SubaruManualParkingBrakeSng")  # ECO加速模式
-      self.cruise_smooth_dis = self.param_s.get_bool("StockLongToyota")  # 巡航平滑
-      self.custom_accel_limit = self.param_s.get_bool("LkasToggle")  # 用户限制加速度
+      self.cruise_smooth = self.param_s.get_bool("CruiseSmooth")  # 巡航平滑
+      self.custom_accel_limit = self.param_s.get_bool("UserAccelTable")  # 用户限制加速度
 
     actuators = CC.actuators
     hud_control = CC.hudControl
@@ -431,7 +429,7 @@ class CarController(CarControllerBase):
           logger.log("cruise start", speed=speed, aEgo=CS.out.aEgo, accel_start=self.accel_start,
                      accel_limit=accel_limit, jerk_limit=jerk_limit)
 
-      if (CS.out.cruiseState.enabled and not self.cruise_smooth_dis and not self.gasPressed) or self.gas_change_smooth:  # 巡航状态开启时进行平滑 或者 从踩油门到释放油门时进行平滑
+      if (CS.out.cruiseState.enabled and self.cruise_smooth and not self.gasPressed) or self.gas_change_smooth:  # 巡航状态开启时进行平滑 或者 从踩油门到释放油门时进行平滑
         accel_ramp_time_max = 5.0
         if self.accel_ramp_time < accel_ramp_time_max:
           cruise_ramp = True
