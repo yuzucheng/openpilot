@@ -123,7 +123,7 @@ class VCruiseHelper:
 
     v_cruise_delta = 1. if is_metric else IMPERIAL_INCREMENT
     #v_cruise_delta_mltplr = 10 if is_metric else 5
-    #修改调节速度的步进为5
+    #淇敼璋冭妭閫熷害鐨勬杩涗负5
     v_cruise_delta_mltplr = 5 
 
     for b in CS.buttonEvents:
