@@ -2461,8 +2461,8 @@ This may take up to a minute.</source>
 <context>
     <name>UserFuncPanel</name>
     <message>
-        <source>Cruise Configuration</source>
-        <translation>巡航配置</translation>
+        <source>Turn Configuration</source>
+        <translation>转弯配置</translation>
     </message>
     <message>
         <source>Enable Vision-based Cruise Speed Control (V-CSC)</source>
@@ -2481,12 +2481,20 @@ This may take up to a minute.</source>
         <translation>当扭矩使用超过70%时，会降低巡航速度以保证安全，降低幅度为(0~50%)</translation>
     </message>
     <message>
+        <source>Cruise Configuration</source>
+        <translation>巡航配置</translation>
+    </message>
+    <message>
         <source>Enable Auto Cruise</source>
         <translation>启用自动巡航功能</translation>
     </message>
     <message>
         <source>Automatic cruise will be activated when the conditions are met</source>
         <translation>当条件符合时，将会自动启动巡航功能，比如离前车距离小于指定距离时</translation>
+    </message>
+    <message>
+        <source>Cruise On Distance</source>
+        <translation>自动巡航距离(小于此距离时自动开启巡航功能)</translation>
     </message>
     <message>
         <source>Stop Distance</source>

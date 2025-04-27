@@ -5,7 +5,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
 
   ListWidget *list = new ListWidget(this, false);
 
-  list->addItem(new LabelControl(tr("Cruise Configuration")));
+  list->addItem(new LabelControl(tr("Turn Configuration")));
 
   auto toggle_vc = new ParamControl(
     "TurnVisionCruise",
@@ -27,6 +27,9 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(toggle_sc);
   toggles["SteerCruiseTune"] = toggle_sc;
 
+  list->addItem(horizontal_line()); // 添加分割线
+
+  list->addItem(new LabelControl(tr("Cruise Configuration")));
   auto toggle_auto_cruise = new ParamControl(
     "AutoCruise",
     tr("Enable Auto Cruise"),
@@ -37,12 +40,13 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(toggle_auto_cruise);
   toggles["AutoCruise"] = toggle_auto_cruise;
 
+  list->addItem(new LabelControl(tr("Cruise On Distance")));
+
   auto cruise_on_distance = new CruiseOnDist();
   connect(cruise_on_distance, &SPOptionControl::updateLabels, cruise_on_distance, &CruiseOnDist::refresh);
   list->addItem(cruise_on_distance);
 
-  // 添加分割线
-  list->addItem(horizontal_line());
+  list->addItem(horizontal_line()); // 添加分割线
 
   list->addItem(new LabelControl(tr("Stop Distance")));
 
