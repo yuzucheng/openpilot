@@ -125,7 +125,7 @@ class CarInterface(CarInterfaceBase):
 
     if startAccel < 0.1:
       accel_personality = AccelPersonality.stock
-      val = params.get("AccelPersonality")
+      val = Params().get("AccelPersonality")
       if val is not None:
         try:
           accel_personality = int(val)
