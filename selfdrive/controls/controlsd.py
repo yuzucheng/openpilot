@@ -132,6 +132,13 @@ class Controls:
     if not self.CP.openpilotLongitudinalControl:
       self.params.remove("ExperimentalMode")
 
+    self.auto_cruise = self.params.get_bool("AutoCruise")
+    self.cruise_on_dist = self.params.get_int("CruiseOnDist")
+    self.d_rel = 0
+    self.v_rel = 0
+    self.v_lead_kph = 0
+    self.auto_cruise_on = False
+
     self.CS_prev = car.CarState.new_message()
     self.AM = AlertManager()
     self.events = Events()
@@ -187,6 +194,8 @@ class Controls:
     self.custom_model, self.model_gen = get_model_generation(self.params)
     model_capabilities = ModelCapabilities.get_by_gen(self.model_gen)
     self.model_use_lateral_planner = self.custom_model and model_capabilities & ModelCapabilities.LateralPlannerSolution
+
+    self.accel_personality = self.read_accel_personality_param()
 
     self.can_log_mono_time = 0
 
@@ -586,6 +595,19 @@ class Controls:
     if self.active:
       self.current_alert_types.append(ET.WARNING)
 
+  def _check_safe_stop(self, CS, safe_distance = 3):
+    v_ego = CS.vEgo
+    decel_rate = 1.5
+    d_stop_ego = (v_ego ** 2) / (2 * decel_rate)
+    d_stop_rel = (self.v_rel ** 2) / (2 * decel_rate)
+
+    d_final = self.d_rel - d_stop_ego - d_stop_rel
+
+    if d_final >= safe_distance:
+      return True, d_final
+    else:
+      return False, d_final
+
   def state_control(self, CS):
     """Given the state, this function returns a CarControl packet"""
 
@@ -861,6 +883,7 @@ class Controls:
 
     controlsStateSP.lateralState = lat_tuning
     controlsStateSP.personality = self.personality
+    controlsStateSP.accelPersonality = self.accel_personality
 
     if self.enable_nnff and lat_tuning == 'torque':
       controlsStateSP.lateralControlState.torqueState = self.LaC.pid_long_sp
@@ -909,12 +932,19 @@ class Controls:
     except (ValueError, TypeError):
       return custom.LongitudinalPersonalitySP.standard
 
+  def read_accel_personality_param(self):
+    try:
+      return int(self.params.get("AccelPersonality"))
+    except (ValueError, TypeError):
+      return custom.AccelerationPersonality.stock
+
   def params_thread(self, evt):
     while not evt.is_set():
       self.is_metric = self.params.get_bool("IsMetric")
       self.experimental_mode = self.params.get_bool("ExperimentalMode") and (self.CP.openpilotLongitudinalControl or
                                                                              (not self.CP.pcmCruiseSpeed and self.custom_stock_planner_speed))
       self.personality = self.read_personality_param()
+      self.accel_personality = self.read_accel_personality_param()
       if self.CP.notCar:
         self.joystick_mode = self.params.get_bool("JoystickDebugMode")
 
