@@ -27,6 +27,16 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(toggle_sc);
   toggles["SteerCruiseTune"] = toggle_sc;
 
+  auto toggle_dis_traffic_light = new ParamControl(
+    "DisEnhTrafficLightTurn",
+    tr("Disable Enhance trafficLight when turning"),
+    tr("Disable the Enhance trafficLight function when turning"),
+    "../assets/offroad/icon_blank.png",
+    this
+  );
+  list->addItem(toggle_dis_traffic_light);
+  toggles["DisEnhTrafficLightTurn"] = toggle_dis_traffic_light;
+
   list->addItem(horizontal_line()); // 添加分割线
 
   list->addItem(new LabelControl(tr("Cruise Configuration")));
@@ -80,6 +90,16 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   );
   list->addItem(toggle_traffic_light);
   toggles["EnhanceTrafficLight"] = toggle_traffic_light;
+
+  auto toggle_red_light_dis_enh_func = new ParamControl(
+    "DisEnhanceTrafficRedLight",
+    tr("Disable enhance after red light"),
+    tr("Disable the enhance trafficLight function after red light"),
+    "../assets/offroad/icon_blank.png",
+    this
+  );
+  list->addItem(toggle_red_light_dis_enh_func);
+  toggles["DisEnhanceTrafficRedLight"] = toggle_red_light_dis_enh_func;
 
   auto cruise_smooth = new ParamControl(
     "CruiseSmooth",

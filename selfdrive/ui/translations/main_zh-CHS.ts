@@ -2481,6 +2481,14 @@ This may take up to a minute.</source>
         <translation>当扭矩使用超过70%时，会降低巡航速度以保证安全，降低幅度为(0~50%)</translation>
     </message>
     <message>
+        <source>Disable Enhance trafficLight when turning</source>
+        <translation>转弯时关闭红绿灯增强功能</translation>
+    </message>
+    <message>
+        <source>Disable the Enhance trafficLight function when turning</source>
+        <translation>开启此选项后，如果模型预测到需要转弯或正在转弯，则关闭红绿灯增强功能</translation>
+    </message>
+    <message>
         <source>Cruise Configuration</source>
         <translation>巡航配置</translation>
     </message>
@@ -2527,6 +2535,14 @@ This may take up to a minute.</source>
     <message>
         <source>Enable the Enhance trafficLight function</source>
         <translation>打开此选项后将启用红绿灯增强功能，能更好的停在停止线内</translation>
+    </message>
+    <message>
+        <source>Disable enhance after red light</source>
+        <translation>红灯停车后关闭增强功能</translation>
+    </message>
+    <message>
+        <source>Disable the enhance trafficLight function after red light</source>
+        <translation>打开此选项后，在红灯前停车后关闭红绿灯增强功能，进入Op原版的绿灯起步检测功能</translation>
     </message>
     <message>
         <source>Cruise Smooth</source>

@@ -343,6 +343,8 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"UserAccelTable", PERSISTENT | BACKUP},
     {"AutoCruise", PERSISTENT | BACKUP},
     {"CruiseOnDist", PERSISTENT | BACKUP},
+    {"DisEnhTrafficLightTurn", PERSISTENT | BACKUP},
+    {"DisEnhanceTrafficRedLight", PERSISTENT | BACKUP},
 
     {"SunnylinkCache_Users", PERSISTENT},
     {"SunnylinkCache_Roles", PERSISTENT},
