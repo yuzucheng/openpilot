@@ -5,6 +5,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
 
   ListWidget *list = new ListWidget(this, false);
 
+  //============================================================
   list->addItem(new LabelControl(tr("Turn Configuration")));
 
   auto toggle_vc = new ParamControl(
@@ -39,7 +40,9 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
 
   list->addItem(horizontal_line()); // 添加分割线
 
+  //============================================================
   list->addItem(new LabelControl(tr("Cruise Configuration")));
+
   auto toggle_auto_cruise = new ParamControl(
     "AutoCruise",
     tr("Enable Auto Cruise"),
@@ -58,6 +61,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
 
   list->addItem(horizontal_line()); // 添加分割线
 
+  //============================================================
   list->addItem(new LabelControl(tr("Stop Distance")));
 
   stop_distance = new StopDistance();
@@ -81,6 +85,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
 
   list->addItem(horizontal_line());
 
+  //============================================================
   auto toggle_traffic_light = new ParamControl(
     "EnhanceTrafficLight",
     tr("Enhance trafficLight"),
@@ -130,6 +135,37 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   );
   list->addItem(accel_smooth);
   toggles["AccelSmooth"] = accel_smooth;
+
+  list->addItem(horizontal_line());
+
+  //============================================================
+  list->addItem(new LabelControl(tr("Condition Experimental Mode")));
+
+  auto cond_experi_mode = new ParamControl(
+    "ConditionExperimentalMode",
+    tr("Enable Condition Experimental Mode"),
+    tr("Enable this toggle to setting the experimental mode, Disable experimental mode when the speed is greater than the specified value or the Angle is greater than the specified value"),
+    "../assets/offroad/icon_blank.png",
+    this
+  );
+  list->addItem(cond_experi_mode);
+  toggles["ConditionExperimentalMode"] = cond_experi_mode;
+
+  list->addItem(new LabelControl(tr("Experimental SteerAngle And Speed Setting")));
+
+  experimental_mode_angle = new ExperimentalModeAngle();
+  connect(experimental_mode_angle, &SPOptionControl::updateLabels, experimental_mode_angle, &ExperimentalModeAngle::refresh);
+  list->addItem(experimental_mode_angle);
+
+  experimental_mode_and_speed = new ExperimentalModeAndSpeed();
+  connect(experimental_mode_and_speed, &SPOptionControl::updateLabels, experimental_mode_and_speed, &ExperimentalModeAndSpeed::refresh);
+  list->addItem(experimental_mode_and_speed);
+
+  list->addItem(new LabelControl(tr("Experimental Speed Setting")));
+
+  experimental_mode_speed = new ExperimentalModeSpeed();
+  connect(experimental_mode_speed, &SPOptionControl::updateLabels, experimental_mode_speed, &ExperimentalModeSpeed::refresh);
+  list->addItem(experimental_mode_speed);
 
   list->addItem(horizontal_line());
 
@@ -302,3 +338,66 @@ void vEgoStopping::refresh() {
   }
 }
 
+ExperimentalModeAngle::ExperimentalModeAngle() : SPOptionControl(
+  "ExperimentalModeAngle",
+  "",
+  tr("Disable Experimental Mode when the angle large than the value."),
+  "../assets/offroad/icon_blank.png",
+  {0, 90},
+  5) {
+
+  refresh();
+}
+
+void ExperimentalModeAngle::refresh() {
+  QString option = QString:: fromStdString(params.get("ExperimentalModeAngle"));
+  if (option == "0") {
+    setLabel(tr("Disable"));
+  } else {
+    setLabel(option + " " + tr("Degree"));
+  }
+}
+
+ExperimentalModeSpeed::ExperimentalModeSpeed() : SPOptionControl(
+  "ExperimentalModeSpeed",
+  "",
+  tr("Disable Experimental Mode when the speed large than the value."),
+  "../assets/offroad/icon_blank.png",
+  {0, 255},
+  5) {
+
+  refresh();
+}
+
+void ExperimentalModeSpeed::refresh() {
+  QString option = QString:: fromStdString(params.get("ExperimentalModeSpeed"));
+  bool is_metric = params.getBool("IsMetric");
+
+  if (option == "0") {
+    setLabel(tr("Disable"));
+  } else {
+    setLabel(option + " " + (is_metric ? tr("km/h") : tr("mph")));
+  }
+}
+
+ExperimentalModeAndSpeed::ExperimentalModeAndSpeed() : SPOptionControl(
+  "ExperimentalModeAndSpeed",
+  "",
+  tr("Disable Experimental Mode when the speed large than the value."),
+  "../assets/offroad/icon_blank.png",
+  {0, 255},
+  1) {
+
+  refresh();
+}
+
+void ExperimentalModeAndSpeed::refresh() {
+  QString option = QString:: fromStdString(params.get("ExperimentalModeAndSpeed"));
+  bool is_metric = params.getBool("IsMetric");
+
+  if (option == "0") {
+    setLabel(tr("Disable"));
+  } else {
+    setLabel(option + " " + (is_metric ? tr("km/h") : tr("mph")));
+  }
+}

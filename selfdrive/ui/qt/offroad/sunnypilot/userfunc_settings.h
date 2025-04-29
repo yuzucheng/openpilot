@@ -56,6 +56,36 @@ private:
   Params params;
 };
 
+class ExperimentalModeSpeed : public SPOptionControl {
+  Q_OBJECT
+
+public:
+  ExperimentalModeSpeed();
+  void refresh();
+private:
+  Params params;
+};
+
+class ExperimentalModeAndSpeed : public SPOptionControl {
+  Q_OBJECT
+
+public:
+  ExperimentalModeAndSpeed();
+  void refresh();
+private:
+  Params params;
+};
+
+class ExperimentalModeAngle : public SPOptionControl {
+  Q_OBJECT
+
+public:
+  ExperimentalModeAngle();
+  void refresh();
+private:
+  Params params;
+};
+
 class UserFuncPanel : public QFrame {
   Q_OBJECT
 
@@ -79,4 +109,8 @@ private:
   ComfortBrake *comfort_break;
   StartAccel *start_accel;
   vEgoStopping *vego_stopping;
+
+  ExperimentalModeAngle *experimental_mode_angle;
+  ExperimentalModeAndSpeed *experimental_mode_and_speed;
+  ExperimentalModeSpeed *experimental_mode_speed;
 };

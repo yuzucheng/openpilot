@@ -2568,6 +2568,42 @@ This may take up to a minute.</source>
         <source>Smooth the cruise accel</source>
         <translation>开启此选项后，将会对巡航时的加速度和减速度进行平滑处理(加速平滑系数大，减速平滑系数小)</translation>
     </message>
+    <message>
+        <source>Disable</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <source>Degree</source>
+        <translation>度</translation>
+    </message>
+    <message>
+        <source>Condition Experimental Mode</source>
+        <translation>实验实验模式设置</translation>
+    </message>
+    <message>
+        <source>Experimental SteerAngle And Speed Setting</source>
+        <translation>方向盘角度和速度设置(均大于时关闭实验模式)</translation>
+    </message>
+    <message>
+        <source>Experimental Speed Setting</source>
+        <translation>速度设置(大于时关闭实验模式)</translation>
+    </message>
+    <message>
+        <source>Enable Condition Experimental Mode</source>
+        <translation>开启条件实验模式</translation>
+    </message>
+    <message>
+        <source>Enable this toggle to setting the experimental mode, Disable experimental mode when the speed is greater than the specified value or the Angle is greater than the specified value</source>
+        <translation>打开此开关后，当设定的速度大于指定速度或者方向盘角度大于指定角度时关闭实验模式。</translation>
+    </message>
+    <message>
+        <source>Disable Experimental Mode when the angle large than the value.</source>
+        <translation>当方向盘角度大于设置值时关闭实验模式。</translation>
+    </message>
+    <message>
+        <source>Disable Experimental Mode when the speed large than the value.</source>
+        <translation>当速度大于设置值时关闭实验模式。</translation>
+    </message>
 </context>
 <context>
     <name>TermsPage</name>

@@ -129,6 +129,10 @@ def manager_init() -> None:
     ("DisEnhTrafficLightTurn", "1"),
     ("DisEnhanceTrafficRedLight", "1"),
     ("AccelSmooth", "0"),
+    ("ConditionExperimentalMode", "0"),
+    ("ExperimentalModeSpeed", "0"),
+    ("ExperimentalModeAngle", "0"),
+    ("ExperimentalModeAndSpeed", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
