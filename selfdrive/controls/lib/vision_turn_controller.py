@@ -303,12 +303,12 @@ class VisionTurnController:
       self._soft_v_target = 255.
 
     #调试信息打印
-    if self.frame % 4 == 0:
-      try:
-        print(f"[VTC] lat_acc: {self._max_pred_lat_acc:5.1f} m/s^2 | steer: {steer:3.1f} | v_cruise: {safe_int(v_cruise_kmh):3d} km/h | v_soft: {safe_int(soft_v_target_kmh):2d} km/h | vtc: {safe_int(v_target_kmh):2d} km/h")
-      except Exception as e:
-        logger.log("[WARN] Exception in print VTC information")
-        print(f"[WARN] Exception in print VTC information: {e}")
+    #if self.frame % 4 == 0:
+    #  try:
+    #    print(f"[VTC] lat_acc: {self._max_pred_lat_acc:5.1f} m/s^2 | steer: {steer:3.1f} | v_cruise: {safe_int(v_cruise_kmh):3d} km/h | v_soft: {safe_int(soft_v_target_kmh):2d} km/h | vtc: {safe_int(v_target_kmh):2d} km/h")
+    #  except Exception as e:
+    #    logger.log("[WARN] Exception in print VTC information")
+    #    print(f"[WARN] Exception in print VTC information: {e}")
 
   def _state_transition(self):
     if not self._op_enabled or not self._is_enabled or self._gas_pressed or self._v_ego < MIN_TARGET_V:
