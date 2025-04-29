@@ -50,7 +50,7 @@ echo "#define COMMA_VERSION \"$VERSION-release\"" > common/version.h
 
 echo "[-] committing version $VERSION T=$SECONDS"
 git add -f .
-git commit -a -m "sunnypilot v$VERSION release"
+git commit -a -m "sunnypilot v$VERSION staging"
 #git branch --set-upstream-to=origin/$STAGING_BRANCH
 git branch --set-upstream-to=origin/release-empty
 
@@ -122,7 +122,7 @@ export GIT_SSH_COMMAND="ssh -i /data/gitkey"
 echo "GIT_SSH_COMMAND = $GIT_SSH_COMMAND"
 
 if [ ! -z "$STAGING_BRANCH" ]; then
-  echo "[-] pushing release T=$SECONDS"
+  echo "[-] pushing staging T=$SECONDS"
   git push -f origin $STAGING_BRANCH:$STAGING_BRANCH
 fi
 
