@@ -2466,7 +2466,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Enable Vision-based Cruise Speed Control (V-CSC)</source>
-        <translation>启用视觉提前降低巡航速度</translation>
+        <translation>启用视觉提前降低巡航速度(建议开)</translation>
     </message>
     <message>
         <source>Use vision path tune cruise speed</source>
@@ -2474,7 +2474,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Enable Steer-based Cruise Speed Control (S-CSC)</source>
-        <translation>启用扭矩降低巡航速度</translation>
+        <translation>启用扭矩降低巡航速度(推荐开)</translation>
     </message>
     <message>
         <source>Use steer tune cruise speed</source>
@@ -2482,7 +2482,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Disable Enhance trafficLight when turning</source>
-        <translation>转弯时关闭红绿灯增强功能</translation>
+        <translation>转弯时关闭红绿灯增强功能(推荐开)</translation>
     </message>
     <message>
         <source>Disable the Enhance trafficLight function when turning</source>
@@ -2494,7 +2494,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Enable Auto Cruise</source>
-        <translation>启用自动巡航功能</translation>
+        <translation>启用自动巡航功能(功能未实现)</translation>
     </message>
     <message>
         <source>Automatic cruise will be activated when the conditions are met</source>
@@ -2506,23 +2506,23 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Stop Distance</source>
-        <translation>停车距离</translation>
+        <translation>停车距离(推荐6m)</translation>
     </message>
     <message>
         <source>Comfort Brake</source>
-        <translation>刹车减速度</translation>
+        <translation>刹车减速度(推荐2.4)</translation>
     </message>
     <message>
         <source>ComfortBrake</source>
-        <translation>刹车减速度</translation>
+        <translation>刹车减速度(推荐2.4)</translation>
     </message>
     <message>
         <source>Start Accel</source>
-        <translation>起步加速度</translation>
+        <translation>起步加速度(推荐自动)</translation>
     </message>
     <message>
         <source>vEgoStopping</source>
-        <translation>停车速度</translation>
+        <translation>停车速度(推荐0.5)</translation>
     </message>
     <message>
         <source>Auto</source>
@@ -2530,7 +2530,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Enhance trafficLight</source>
-        <translation>开启红绿灯增强功能</translation>
+        <translation>开启红绿灯增强功能(推荐开)</translation>
     </message>
     <message>
         <source>Enable the Enhance trafficLight function</source>
@@ -2538,7 +2538,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Disable enhance after red light</source>
-        <translation>红灯停车后关闭增强功能</translation>
+        <translation>红灯停车后关闭增强功能(推荐开)</translation>
     </message>
     <message>
         <source>Disable the enhance trafficLight function after red light</source>
@@ -2546,7 +2546,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Cruise Smooth</source>
-        <translation>开始巡航时平滑</translation>
+        <translation>巡航启动时进行平滑(推荐开)</translation>
     </message>
     <message>
         <source>Smooth the accel when starting the cruise</source>
@@ -2554,7 +2554,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>User accel limit table</source>
-        <translation>开启用户加速度限制表</translation>
+        <translation>启用用户加速度限制表(建议关)</translation>
     </message>
     <message>
         <source>Using the user accel limit table</source>
