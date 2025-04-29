@@ -133,6 +133,9 @@ def manager_init() -> None:
     ("ExperimentalModeSpeed", "0"),
     ("ExperimentalModeAngle", "0"),
     ("ExperimentalModeAndSpeed", "0"),
+    ("TurnSteepNess", "90"),
+    ("TurnLatAccel", "10"),
+    ("TurnMaxFactor", "6"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))

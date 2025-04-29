@@ -2473,6 +2473,18 @@ This may take up to a minute.</source>
         <translation>通过模型预测的轨迹提前预测转弯，降低巡航速度以顺利通过弯道</translation>
     </message>
     <message>
+        <source>Turn Steep Ness</source>
+        <translation>转弯降速的陡度(越大降速越快，推荐9)</translation>
+    </message>
+    <message>
+        <source>Turn Lat Accel</source>
+        <translation>开始降速的横向加速度(推荐1.0m/s^2)</translation>
+    </message>
+    <message>
+        <source>Turn max factor</source>
+        <translation>最大降速比例(推荐0.6)</translation>
+    </message>
+    <message>
         <source>Enable Steer-based Cruise Speed Control (S-CSC)</source>
         <translation>启用扭矩降低巡航速度(推荐开)</translation>
     </message>

@@ -18,6 +18,24 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(toggle_vc);
   toggles["TurnVisionCruise"] = toggle_vc;
 
+  list->addItem(new LabelControl(tr("Turn Steep Ness")));
+
+  turn_steep_ness = new TurnSteepNess();
+  connect(turn_steep_ness, &SPOptionControl::updateLabels, turn_steep_ness, &TurnSteepNess::refresh);
+  list->addItem(turn_steep_ness);
+
+  list->addItem(new LabelControl(tr("Turn Lat Accel")));
+
+  turn_lat_acc = new TurnLatAccel();
+  connect(turn_lat_acc, &SPOptionControl::updateLabels, turn_lat_acc, &TurnLatAccel::refresh);
+  list->addItem(turn_lat_acc);
+
+  list->addItem(new LabelControl(tr("Turn max factor")));
+
+  turn_max_factor = new TurnMaxFactor();
+  connect(turn_max_factor, &SPOptionControl::updateLabels, turn_max_factor, &TurnMaxFactor::refresh);
+  list->addItem(turn_max_factor);
+
   auto toggle_sc = new ParamControl(
     "SteerCruiseTune",
     tr("Enable Steer-based Cruise Speed Control (S-CSC)"),
@@ -399,5 +417,74 @@ void ExperimentalModeAndSpeed::refresh() {
     setLabel(tr("Disable"));
   } else {
     setLabel(option + " " + (is_metric ? tr("km/h") : tr("mph")));
+  }
+}
+
+TurnSteepNess::TurnSteepNess() : SPOptionControl(
+  "TurnSteepNess",
+  "",
+  tr("TurnSteepNess"),
+  "../assets/offroad/icon_blank.png",
+  {10, 200},
+  1) {
+
+  refresh();
+}
+
+void TurnSteepNess::refresh() {
+  QString option = QString::fromStdString(params.get("TurnSteepNess"));
+  bool ok;
+  int int_value = option.toInt(&ok);
+  if (ok) {
+    double real_value = int_value / 10.0;
+    setLabel(QString::number(real_value, 'f', 1));
+  } else {
+    setLabel(option);  // 如果转换失败，直接显示原值
+  }
+}
+
+TurnLatAccel::TurnLatAccel() : SPOptionControl(
+  "TurnLatAccel",
+  "",
+  tr("TurnLatAccel"),
+  "../assets/offroad/icon_blank.png",
+  {1, 40},
+  1) {
+
+  refresh();
+}
+
+void TurnLatAccel::refresh() {
+  QString option = QString::fromStdString(params.get("TurnLatAccel"));
+  bool ok;
+  int int_value = option.toInt(&ok);
+  if (ok) {
+    double real_value = int_value / 10.0;
+    setLabel(QString::number(real_value, 'f', 1) + " m/s^2");
+  } else {
+    setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
+  }
+}
+
+TurnMaxFactor::TurnMaxFactor() : SPOptionControl(
+  "TurnMaxFactor",
+  "",
+  tr("TurnMaxFactor"),
+  "../assets/offroad/icon_blank.png",
+  {1, 10},
+  1) {
+
+  refresh();
+}
+
+void TurnMaxFactor::refresh() {
+  QString option = QString::fromStdString(params.get("TurnMaxFactor"));
+  bool ok;
+  int int_value = option.toInt(&ok);
+  if (ok) {
+    double real_value = int_value / 10.0;
+    setLabel(QString::number(real_value, 'f', 1));
+  } else {
+    setLabel(option);  // 如果转换失败，直接显示原值
   }
 }
