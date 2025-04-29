@@ -121,6 +121,16 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(user_accel_tb);
   toggles["UserAccelTable"] = user_accel_tb;
 
+  auto accel_smooth = new ParamControl(
+    "AccelSmooth",
+    tr("Accel Smooth"),
+    tr("Smooth the cruise accel"),
+    "../assets/offroad/icon_blank.png",
+    this
+  );
+  list->addItem(accel_smooth);
+  toggles["AccelSmooth"] = accel_smooth;
+
   list->addItem(horizontal_line());
 
   param_watcher = new ParamWatcher(this);

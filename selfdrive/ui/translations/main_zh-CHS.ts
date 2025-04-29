@@ -2554,11 +2554,19 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>User accel limit table</source>
-        <translation>启用用户加速度限制表(建议关)</translation>
+        <translation>启用用户加速度限制表(可不开)</translation>
     </message>
     <message>
         <source>Using the user accel limit table</source>
         <translation>开启此选项后，将会启动用户写在代码里面的最大加速度限制表，用户可以对各个速度点的最大加速度进行限制</translation>
+    </message>
+    <message>
+        <source>Accel Smooth</source>
+        <translation>加速度平滑(可不开)</translation>
+    </message>
+    <message>
+        <source>Smooth the cruise accel</source>
+        <translation>开启此选项后，将会对巡航时的加速度和减速度进行平滑处理(加速平滑系数大，减速平滑系数小)</translation>
     </message>
 </context>
 <context>

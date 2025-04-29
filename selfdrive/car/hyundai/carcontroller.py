@@ -127,6 +127,7 @@ class CarController(CarControllerBase):
     self.cruise_smooth = self.param_s.get_bool("CruiseSmooth") #巡航平滑
     self.custom_accel_limit = self.param_s.get_bool("UserAccelTable") #用户限制加速度
     self.accel_personality = AccelPersonality.stock
+    self.accel_smooth = self.param_s.get_bool("AccelSmooth")
 
     self.jerk = 0.0
     self.jerk_l = 0.0
@@ -196,6 +197,7 @@ class CarController(CarControllerBase):
     if self.frame % 200 == 0:
       self.cruise_smooth = self.param_s.get_bool("CruiseSmooth")  # 巡航平滑
       self.custom_accel_limit = self.param_s.get_bool("UserAccelTable")  # 用户限制加速度
+      self.accel_smooth = self.param_s.get_bool("AccelSmooth")
 
     actuators = CC.actuators
     hud_control = CC.hudControl
@@ -464,9 +466,13 @@ class CarController(CarControllerBase):
         self.clip_accel = True
 
       # 通过算法对加速度进行平滑
-      #if self.hkg_can_smooth_stop:
-        #accel = self.smooth_accel(accel, speed, DT_CTRL)
-      accel = self.smooth_accel(accel, speed, DT_CTRL)
+      long_control = actuators.longControlState
+      if long_control == LongCtrlState.off or (long_control == LongCtrlState.stopping and CS.out.standstill):
+        self.last_accel = accel
+      elif self.accel_smooth:
+        accel = self.smooth_accel(accel, speed, DT_CTRL)
+      else:
+        self.last_accel = accel
 
       self.make_jerk(CS, accel, actuators)
 
