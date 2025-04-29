@@ -51,6 +51,19 @@ class VisionTurnController:
     self._is_enabled = self._params.get_bool("TurnVisionControl")
     self._is_turn_vision_cruise = self._params.get_bool("TurnVisionCruise")
     self._is_steer_cruise_tune = self._params.get_bool("SteerCruiseTune")
+    #new
+    try:
+      val = Params().get("TurnSteepNess")
+      self.turn_steep_ness = float(val)/10 if val is not None and val != b'' else 0.5
+      val = Params().get("TurnLatAccel")
+      self.turn_lat_acc = float(val) / 10 if val is not None and val != b'' else 0
+      val = Params().get("TurnMaxFactor")
+      self.turn_max_factor = float(val) / 10 if val is not None and val != b'' else 0
+    except AttributeError:
+      self.turn_steep_ness = 9
+      self.turn_lat_acc = 1.0
+      self.turn_max_factor = 0.6
+    #new
     self._last_params_update = 0.
     self._v_ego = 0.
     self._v_target = MIN_TARGET_V
@@ -119,14 +132,29 @@ class VisionTurnController:
       self._is_enabled = self._params.get_bool("TurnVisionControl")
       self._is_turn_vision_cruise = self._params.get_bool("TurnVisionCruise")
       self._is_steer_cruise_tune = self._params.get_bool("SteerCruiseTune")
+      try:
+        val = Params().get("TurnSteepNess")
+        self.turn_steep_ness = float(val) / 10 if val is not None and val != b'' else 9
+        val = Params().get("TurnLatAccel")
+        self.turn_lat_acc = float(val) / 10 if val is not None and val != b'' else 1.0
+        val = Params().get("TurnMaxFactor")
+        self.turn_max_factor = float(val) / 10 if val is not None and val != b'' else 0.6
+      except AttributeError:
+        self.turn_steep_ness = 9
+        self.turn_lat_acc = 1.0
+        self.turn_max_factor = 0.6
+      # new
       self._last_params_update = t
 
   def calculate_margin_factor(self, max_pred_lat_acc):
+    #self.turn_steep_ness = 9
+    #self.turn_lat_acc = 1.0
+    #self.turn_max_factor = 0.6
     # 使用 Sigmoid 函数平滑调整 margin_factor
     # 参数决定了平滑的区间和范围
-    steepness = 9  # 决定平滑的陡峭程度，较大的值让变化更快
-    shift = 1.0  # 控制从哪个横向加速度值开始快速变化
-    max_value = 0.6  # 最终的最大值
+    steepness = self.turn_steep_ness  #9  # 决定平滑的陡峭程度，较大的值让变化更快
+    shift = self.turn_lat_acc         #1.0  # 控制从哪个横向加速度值开始快速变化
+    max_value = self.turn_max_factor  #0.6  # 最终的最大值
 
     # 安全防护：判空/判NaN/范围限制
     if max_pred_lat_acc is None or math.isnan(max_pred_lat_acc):
