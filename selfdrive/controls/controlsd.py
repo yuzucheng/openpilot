@@ -641,8 +641,7 @@ class Controls:
     CC.enabled = self.enabled
 
     #fishsp add
-    #steeringAngle = abs(CS.out.steeringAngleDeg)  # 方向盘角度（度）
-    steeringAngle = abs(self.sm['carState'].steeringAngleDeg)
+    steeringAngle = abs(CS.steeringAngleDeg)
     v_ego_kph = CS.vEgo * CV.MS_TO_KPH
     condition_experimental_mode_disable = False
     if self.experimental_mode_angle == 0 and self.experimental_mode_speed == 0:
