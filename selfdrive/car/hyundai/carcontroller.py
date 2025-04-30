@@ -84,7 +84,7 @@ class CarController(CarControllerBase):
     self.gasPressed = False
     self.gasPressed_last = False
     self.gas_change_smooth = False
-    sub_services = ['longitudinalPlan', 'longitudinalPlanSP', 'carState', 'controlsStateSP']
+    sub_services = ['longitudinalPlan', 'longitudinalPlanSP', 'carState']
     if CP.openpilotLongitudinalControl:
       sub_services.append('radarState')
     # TODO: Always true, prep for future conditional refactoring
@@ -126,7 +126,8 @@ class CarController(CarControllerBase):
     self.custom_stock_planner_speed = self.param_s.get_bool("CustomStockLongPlanner")
     self.cruise_smooth = self.param_s.get_bool("CruiseSmooth") #巡航平滑
     self.custom_accel_limit = self.param_s.get_bool("UserAccelTable") #用户限制加速度
-    self.accel_personality = AccelPersonality.stock
+    val = self.param_s.get("AccelPersonality")
+    self.accel_personality = int(val) if val and val.isdigit() else AccelPersonality.stock
     self.accel_smooth = self.param_s.get_bool("AccelSmooth")
 
     self.jerk = 0.0
@@ -183,9 +184,6 @@ class CarController(CarControllerBase):
         self.v_tsc = self.sm['longitudinalPlanSP'].visionTurnSpeed
         self.m_tsc = self.sm['longitudinalPlanSP'].turnSpeed
 
-      if self.sm.updated['controlsStateSP']:
-        self.accel_personality = sm['controlsStateSP'].accelPersonality
-
       if self.frame % 200 == 0:
         self.speed_limit_control_enabled = self.param_s.get_bool("EnableSlc")
         self.is_metric = self.param_s.get_bool("IsMetric")
@@ -198,6 +196,8 @@ class CarController(CarControllerBase):
       self.cruise_smooth = self.param_s.get_bool("CruiseSmooth")  # 巡航平滑
       self.custom_accel_limit = self.param_s.get_bool("UserAccelTable")  # 用户限制加速度
       self.accel_smooth = self.param_s.get_bool("AccelSmooth")
+      val = self.param_s.get("AccelPersonality")
+      self.accel_personality = int(val) if val and val.isdigit() else AccelPersonality.stock
 
     actuators = CC.actuators
     hud_control = CC.hudControl

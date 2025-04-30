@@ -123,14 +123,16 @@ class CarInterface(CarInterfaceBase):
 
     ret.vEgoStopping = vEgoStopping
 
-    if startAccel < 0.1:
+    val = Params().get("AccelPersonality")
+    if val is not None:
+      try:
+        accel_personality = int(val)
+      except ValueError:
+        accel_personality = AccelPersonality.stock
+    else:
       accel_personality = AccelPersonality.stock
-      val = Params().get("AccelPersonality")
-      if val is not None:
-        try:
-          accel_personality = int(val)
-        except ValueError:
-          accel_personality = AccelPersonality.stock
+
+    if startAccel < 0.1:
       if accel_personality == AccelPersonality.eco:
         ret.startAccel = 0.6
       elif accel_personality == AccelPersonality.normal:
@@ -141,6 +143,7 @@ class CarInterface(CarInterfaceBase):
         ret.startAccel = 1.0
     else:
       ret.startAccel = startAccel
+
     ret.longitudinalActuatorDelayLowerBound = 0.5
     ret.longitudinalActuatorDelayUpperBound = 0.5
 
@@ -220,6 +223,8 @@ class CarInterface(CarInterfaceBase):
 
     #if Params().get_bool("HkgSmoothStop"):
     #  ret.vEgoStopping = 0.1
+
+    print(f"[interface]accel_personality: {accel_personality}, startAccel: {ret.startAccel}, vEgoStopping: {ret.vEgoStopping}")
 
     return ret
 

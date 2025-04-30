@@ -26,7 +26,7 @@ from openpilot.selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX, V_CRUIS
 from openpilot.selfdrive.fishsp.traffic_light import CarrotPlanner, XState
 
 LON_MPC_STEP = 0.2  # first step is 0.2s
-A_CRUISE_MIN = -2.5 #-1.2
+A_CRUISE_MIN = -1.2
 #A_CRUISE_MAX_VALS = [1.6, 1.2, 0.8, 0.6]
 #A_CRUISE_MAX_BP =   [0., 10.0, 25., 40.]
 #            km/h    0    36    90   144
@@ -115,11 +115,15 @@ class LongitudinalPlanner:
     self.turn_enable = True
     self.enhance_traffic = True
     self.dis_enhance_red_light = True
+    val = self.params.get("AccelPersonality")
+    self.accel_personality = int(val) if val and val.isdigit() else AccelPersonality.stock
 
   def read_param(self):
     self.enhance_traffic = self.params.get_bool("EnhanceTrafficLight")
     self.turn_enable = self.params.get_bool("DisEnhTrafficLightTurn")
     self.dis_enhance_red_light = self.params.get_bool("DisEnhanceTrafficRedLight")
+    val = self.params.get("AccelPersonality")
+    self.accel_personality = int(val) if val and val.isdigit() else AccelPersonality.stock
     try:
       self.dynamic_experimental_controller.set_enabled(self.params.get_bool("DynamicExperimentalControl"))
     except AttributeError:
@@ -293,8 +297,9 @@ class LongitudinalPlanner:
     prev_accel_constraint = not (reset_state or sm['carState'].standstill)
 
     # 获取加速度限制
-    accel_personality = sm['controlsStateSP'].accelPersonality
-    accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego, accel_personality)]
+    accel_personality = self.accel_personality
+    max_accel = get_max_accel(v_ego, accel_personality)
+    accel_limits = [A_CRUISE_MIN, max_accel]
     accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
 
     #if self.mpc.mode == 'acc':
