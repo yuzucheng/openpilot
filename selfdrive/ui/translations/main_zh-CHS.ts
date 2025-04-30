@@ -2530,11 +2530,11 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Start Accel</source>
-        <translation>起步加速度(推荐自动)</translation>
+        <translation>起步加速度(推荐0.6,非立即生效)</translation>
     </message>
     <message>
         <source>vEgoStopping</source>
-        <translation>停车速度(推荐0.5)</translation>
+        <translation>停车速度(推荐0.5,非立即生效)</translation>
     </message>
     <message>
         <source>Auto</source>
