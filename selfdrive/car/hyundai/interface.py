@@ -129,7 +129,8 @@ class CarInterface(CarInterfaceBase):
 
     ret.vEgoStopping = vEgoStopping
     ret.startAccel = startAccel
-    ret.stopAccel = stopAccel
+    if stopAccel <= -0.1:
+      ret.stopAccel = stopAccel
 
     if DBC[ret.carFingerprint]["radar"] is None:
       if ret.spFlags & (HyundaiFlagsSP.SP_ENHANCED_SCC | HyundaiFlagsSP.SP_CAMERA_SCC_LEAD):

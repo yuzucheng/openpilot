@@ -91,6 +91,11 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   connect(comfort_break, &OptionControlSP::updateLabels, comfort_break, &ComfortBrake::refresh);
   list->addItem(comfort_break);
 
+  list->addItem(new LabelControlSP(tr("Max Stop Accel")));
+  max_stop_accel = new MaxStopAccel();
+  connect(max_stop_accel, &OptionControlSP::updateLabels, max_stop_accel, &MaxStopAccel::refresh);
+  list->addItem(max_stop_accel);
+
   list->addItem(new LabelControlSP(tr("Start Accel")));
   start_accel = new StartAccel();
   connect(start_accel, &OptionControlSP::updateLabels, start_accel, &StartAccel::refresh);
@@ -338,7 +343,7 @@ StopAccel::StopAccel() : OptionControlSP(
   "",
   tr("StopAccel"),
   "../assets/offroad/icon_blank.png",
-  {-40, -1},
+  {-40, 0},
   1) {
 
   refresh();
@@ -349,8 +354,41 @@ void StopAccel::refresh() {
   bool ok;
   int int_value = option.toInt(&ok);
   if (ok) {
-    double real_value = int_value / 10.0;  // 假设是除以10
-    setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
+    if(int_value < 0){
+      double real_value = int_value / 10.0;  // 假设是除以10
+      setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
+    }
+    else{
+      setLabel(tr("Auto"));
+    }
+  } else {
+    setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
+  }
+}
+
+MaxStopAccel::MaxStopAccel() : OptionControlSP(
+  "MaxStopAccel",
+  "",
+  tr("MaxStopAccel"),
+  "../assets/offroad/icon_blank.png",
+  {-40, 0},
+  1) {
+
+  refresh();
+}
+
+void MaxStopAccel::refresh() {
+  QString option = QString::fromStdString(params.get("MaxStopAccel"));
+  bool ok;
+  int int_value = option.toInt(&ok);
+  if (ok) {
+    if(int_value < 0){
+      double real_value = int_value / 10.0;  // 假设是除以10
+      setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
+    }
+    else{
+      setLabel(tr("Auto"));
+    }
   } else {
     setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
   }

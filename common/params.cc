@@ -370,6 +370,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"SteerCruiseTune", PERSISTENT | BACKUP},
     {"StopDistance", PERSISTENT | BACKUP},
     {"ComfortBrake", PERSISTENT | BACKUP},
+    {"MaxStopAccel", PERSISTENT | BACKUP},
     {"StartAccel", PERSISTENT | BACKUP},
     {"StopAccel", PERSISTENT | BACKUP},
     {"vEgoStopping", PERSISTENT | BACKUP},

@@ -2801,6 +2801,10 @@ Reboot Required.</source>
         <translation>刹车舒适度(推荐2.4)</translation>
     </message>
     <message>
+        <source>Max Stop Accel</source>
+        <translation>最大减速度(推荐-2.0)</translation>
+    </message>
+    <message>
         <source>Start Accel</source>
         <translation>起步加速度(推荐0.6,非立即生效)</translation>
     </message>

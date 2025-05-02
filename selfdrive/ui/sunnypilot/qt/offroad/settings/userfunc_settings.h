@@ -86,6 +86,16 @@ private:
   Params params;
 };
 
+class MaxStopAccel : public OptionControlSP {
+  Q_OBJECT
+
+public:
+  MaxStopAccel();
+  void refresh();
+private:
+  Params params;
+};
+
 class vEgoStopping : public OptionControlSP {
   Q_OBJECT
 
@@ -149,6 +159,7 @@ private:
   ComfortBrake *comfort_break;
   StartAccel *start_accel;
   StopAccel *stop_accel;
+  MaxStopAccel *max_stop_accel;
   vEgoStopping *vego_stopping;
 
   ExperimentalModeAngle *experimental_mode_angle;
