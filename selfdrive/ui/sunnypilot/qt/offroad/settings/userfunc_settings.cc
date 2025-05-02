@@ -338,7 +338,7 @@ StopAccel::StopAccel() : OptionControlSP(
   "",
   tr("StopAccel"),
   "../assets/offroad/icon_blank.png",
-  {-40, 0},
+  {-40, -1},
   1) {
 
   refresh();
