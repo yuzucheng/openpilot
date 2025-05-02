@@ -365,6 +365,28 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"OSMDownloadProgress", CLEAR_ON_MANAGER_START},
     {"OsmDbUpdatesCheck", CLEAR_ON_MANAGER_START},  // mapd database update happens with device ON, reset on boot
     // }} PFEIFER - MAPD
+
+    {"TurnVisionCruise", PERSISTENT | BACKUP},
+    {"SteerCruiseTune", PERSISTENT | BACKUP},
+    {"StopDistance", PERSISTENT | BACKUP},
+    {"ComfortBrake", PERSISTENT | BACKUP},
+    {"StartAccel", PERSISTENT | BACKUP},
+    {"vEgoStopping", PERSISTENT | BACKUP},
+    {"EnhanceTrafficLight", PERSISTENT | BACKUP},
+    {"CruiseSmooth", PERSISTENT | BACKUP},
+    {"UserAccelTable", PERSISTENT | BACKUP},
+    {"AutoCruise", PERSISTENT | BACKUP},
+    {"CruiseOnDist", PERSISTENT | BACKUP},
+    {"DisEnhTrafficLightTurn", PERSISTENT | BACKUP},
+    {"DisEnhanceTrafficRedLight", PERSISTENT | BACKUP},
+    {"AccelSmooth", PERSISTENT | BACKUP},
+    {"ConditionExperimentalMode", PERSISTENT | BACKUP},
+    {"ExperimentalModeSpeed", PERSISTENT | BACKUP},
+    {"ExperimentalModeAngle", PERSISTENT | BACKUP},
+    {"ExperimentalModeAndSpeed", PERSISTENT | BACKUP},
+    {"TurnSteepNess", PERSISTENT | BACKUP},
+    {"TurnLatAccel", PERSISTENT | BACKUP},
+    {"TurnMaxFactor", PERSISTENT | BACKUP},
 };
 
 } // namespace

@@ -124,6 +124,28 @@ def manager_init() -> None:
     ("LastSunnylinkPingTime", "0"),
     ("EnableGitlabRunner", "0"),
     ("EnableSunnylinkUploader", "0"),
+
+    ("TurnVisionCruise", "0"),
+    ("SteerCruiseTune", "1"),
+    ("StopDistance", "60"),
+    ("ComfortBrake", "24"),
+    ("StartAccel", "6"),
+    ("vEgoStopping", "5"),
+    ("EnhanceTrafficLight", "1"),
+    ("CruiseSmooth", "1"),
+    ("UserAccelTable", "0"),
+    ("AutoCruise", "0"),
+    ("CruiseOnDist", "6"),
+    ("DisEnhTrafficLightTurn", "1"),
+    ("DisEnhanceTrafficRedLight", "1"),
+    ("AccelSmooth", "0"),
+    ("ConditionExperimentalMode", "0"),
+    ("ExperimentalModeSpeed", "0"),
+    ("ExperimentalModeAngle", "0"),
+    ("ExperimentalModeAndSpeed", "0"),
+    ("TurnSteepNess", "90"),
+    ("TurnLatAccel", "10"),
+    ("TurnMaxFactor", "6"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.now(datetime.UTC).replace(tzinfo=None).isoformat().encode('utf8')))
