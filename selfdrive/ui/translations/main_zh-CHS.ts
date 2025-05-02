@@ -1658,6 +1658,10 @@ Reboot Required.</source>
         <translation>sunnypilot</translation>
     </message>
     <message>
+        <source>UserFunc</source>
+        <translation>用户设置</translation>
+    </message>
+    <message>
         <source>OSM</source>
         <translation>OSM</translation>
     </message>
@@ -2724,6 +2728,165 @@ Reboot Required.</source>
     <message>
         <source>Default is Laneless. In Auto mode, sunnnypilot dynamically chooses between Laneline or Laneless model based on lane recognition confidence level on road and certain conditions.</source>
         <translation>默认为“忽略车道线”。在自动模式下，sunnnypilot根据道路上的车道识别状态和特定条件，自动在车道线或忽略车道模型之间进行动态选择。</translation>
+    </message>
+</context>
+<context>
+    <name>UserFuncPanel</name>
+    <message>
+        <source>Turn Configuration</source>
+        <translation>转弯配置</translation>
+    </message>
+    <message>
+        <source>Enable Vision-based Cruise Speed Control (V-CSC)</source>
+        <translation>启用视觉提前降低巡航速度(建议开)</translation>
+    </message>
+    <message>
+        <source>Use vision path tune cruise speed</source>
+        <translation>通过模型预测的轨迹提前预测转弯，降低巡航速度以顺利通过弯道</translation>
+    </message>
+    <message>
+        <source>Turn Steep Ness</source>
+        <translation>转弯降速的陡度(越大降速越快，推荐9)</translation>
+    </message>
+    <message>
+        <source>Turn Lat Accel</source>
+        <translation>开始降速的横向加速度(推荐1.0m/s^2)</translation>
+    </message>
+    <message>
+        <source>Turn max factor</source>
+        <translation>最大降速比例(推荐0.6)</translation>
+    </message>
+    <message>
+        <source>Enable Steer-based Cruise Speed Control (S-CSC)</source>
+        <translation>启用扭矩降低巡航速度(推荐开)</translation>
+    </message>
+    <message>
+        <source>Use steer tune cruise speed</source>
+        <translation>当扭矩使用超过70%时，会降低巡航速度以保证安全，降低幅度为(0~50%)</translation>
+    </message>
+    <message>
+        <source>Disable Enhance trafficLight when turning</source>
+        <translation>转弯时关闭红绿灯增强功能(推荐开)</translation>
+    </message>
+    <message>
+        <source>Disable the Enhance trafficLight function when turning</source>
+        <translation>开启此选项后，如果模型预测到需要转弯或正在转弯，则关闭红绿灯增强功能</translation>
+    </message>
+    <message>
+        <source>Cruise Configuration</source>
+        <translation>巡航配置</translation>
+    </message>
+    <message>
+        <source>Enable Auto Cruise</source>
+        <translation>启用自动巡航功能(功能未实现)</translation>
+    </message>
+    <message>
+        <source>Automatic cruise will be activated when the conditions are met</source>
+        <translation>当条件符合时，将会自动启动巡航功能，比如离前车距离小于指定距离时</translation>
+    </message>
+    <message>
+        <source>Cruise On Distance</source>
+        <translation>自动巡航距离(小于此距离时自动开启巡航功能)</translation>
+    </message>
+    <message>
+        <source>Stop Distance</source>
+        <translation>停车距离(推荐6m)</translation>
+    </message>
+    <message>
+        <source>Comfort Brake</source>
+        <translation>刹车减速度(推荐2.4)</translation>
+    </message>
+    <message>
+        <source>ComfortBrake</source>
+        <translation>刹车减速度(推荐2.4)</translation>
+    </message>
+    <message>
+        <source>Start Accel</source>
+        <translation>起步加速度(推荐0.6,非立即生效)</translation>
+    </message>
+    <message>
+        <source>vEgoStopping</source>
+        <translation>停车速度(推荐0.5,非立即生效)</translation>
+    </message>
+    <message>
+        <source>Auto</source>
+        <translation>自动</translation>
+    </message>
+    <message>
+        <source>Enhance trafficLight</source>
+        <translation>开启红绿灯增强功能(推荐开)</translation>
+    </message>
+    <message>
+        <source>Enable the Enhance trafficLight function</source>
+        <translation>打开此选项后将启用红绿灯增强功能，能更好的停在停止线内</translation>
+    </message>
+    <message>
+        <source>Disable enhance after red light</source>
+        <translation>红灯停车后关闭增强功能(推荐开)</translation>
+    </message>
+    <message>
+        <source>Disable the enhance trafficLight function after red light</source>
+        <translation>打开此选项后，在红灯前停车后关闭红绿灯增强功能，进入Op原版的绿灯起步检测功能</translation>
+    </message>
+    <message>
+        <source>Cruise Smooth</source>
+        <translation>巡航启动时进行平滑(推荐开)</translation>
+    </message>
+    <message>
+        <source>Smooth the accel when starting the cruise</source>
+        <translation>开启此设置后，在用户刚开启巡航功能的时候，将会对加速度进行平滑</translation>
+    </message>
+    <message>
+        <source>User accel limit table</source>
+        <translation>启用用户加速度限制表(可不开)</translation>
+    </message>
+    <message>
+        <source>Using the user accel limit table</source>
+        <translation>开启此选项后，将会启动用户写在代码里面的最大加速度限制表，用户可以对各个速度点的最大加速度进行限制</translation>
+    </message>
+    <message>
+        <source>Accel Smooth</source>
+        <translation>加速度平滑(可不开)</translation>
+    </message>
+    <message>
+        <source>Smooth the cruise accel</source>
+        <translation>开启此选项后，将会对巡航时的加速度和减速度进行平滑处理(加速平滑系数大，减速平滑系数小)</translation>
+    </message>
+    <message>
+        <source>Disable</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <source>Degree</source>
+        <translation>度</translation>
+    </message>
+    <message>
+        <source>Condition Experimental Mode</source>
+        <translation>实验实验模式设置</translation>
+    </message>
+    <message>
+        <source>Experimental SteerAngle And Speed Setting</source>
+        <translation>方向盘角度和速度设置(均大于时关闭实验模式)</translation>
+    </message>
+    <message>
+        <source>Experimental Speed Setting</source>
+        <translation>速度设置(大于时关闭实验模式)</translation>
+    </message>
+    <message>
+        <source>Enable Condition Experimental Mode</source>
+        <translation>开启条件实验模式</translation>
+    </message>
+    <message>
+        <source>Enable this toggle to setting the experimental mode, Disable experimental mode when the speed is greater than the specified value or the Angle is greater than the specified value</source>
+        <translation>打开此开关后，当设定的速度大于指定速度或者方向盘角度大于指定角度时关闭实验模式。</translation>
+    </message>
+    <message>
+        <source>Disable Experimental Mode when the angle large than the value.</source>
+        <translation>当方向盘角度大于设置值时关闭实验模式。</translation>
+    </message>
+    <message>
+        <source>Disable Experimental Mode when the speed large than the value.</source>
+        <translation>当速度大于设置值时关闭实验模式。</translation>
     </message>
 </context>
 <context>
