@@ -28,6 +28,7 @@ Last updated: July 29, 2024
 
 #include "selfdrive/ui/sunnypilot/qt/offroad/settings/display_settings.h"
 #include "selfdrive/ui/sunnypilot/qt/offroad/settings/sunnypilot_settings.h"
+#include "selfdrive/ui/sunnypilot/qt/offroad/settings/userfunc_settings.h"
 #include "selfdrive/ui/sunnypilot/qt/offroad/settings/vehicle_settings.h"
 #include "selfdrive/ui/sunnypilot/qt/offroad/settings/visuals_settings.h"
 #include "selfdrive/ui/sunnypilot/qt/offroad/settings/trips_settings.h"
