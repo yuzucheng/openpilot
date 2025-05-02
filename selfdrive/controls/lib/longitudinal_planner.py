@@ -114,6 +114,7 @@ class LongitudinalPlanner:
     self.turn_enable = False
     self.enhance_traffic = True
     self.dis_enhance_red_light = True
+    self.max_stop_accel = 0.
 
   def read_param(self):
     try:
@@ -124,6 +125,12 @@ class LongitudinalPlanner:
     except AttributeError:
       self.dynamic_experimental_controller = DynamicExperimentalController()
       self.accel_controller = AccelController()
+
+    try:
+      val = self.params.get("MaxStopAccel")
+      self.max_stop_accel = float(val)/10 if val is not None and val != b'' else 0.
+    except AttributeError:
+      self.max_stop_accel = 0
 
   @staticmethod
   def parse_model(model_msg, model_error):
@@ -297,7 +304,10 @@ class LongitudinalPlanner:
     prev_accel_constraint = not (reset_state or sm['carState'].standstill)
 
     if self.mpc.mode == 'acc':
-      accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego)]
+      if self.max_stop_accel <= -0.1: #new
+        accel_limits = [self.max_stop_accel, get_max_accel(v_ego)]
+      else:
+        accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego)]
       accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
     else:
       accel_limits = [ACCEL_MIN, ACCEL_MAX]
@@ -311,8 +321,10 @@ class LongitudinalPlanner:
       min_limit, max_limit = self.accel_controller.get_accel_limits(v_ego, accel_limits)
       if self.mpc.mode == 'acc':
         # VOACC car, just give it max min (-1.2) so I can brake harder
-        #accel_limits = [A_CRUISE_MIN, max_limit] if self.CP.radarUnavailable else [min_limit, max_limit]
-        accel_limits = [A_CRUISE_MIN, max_limit]
+        if self.max_stop_accel <= -0.1:  # new
+          accel_limits = [self.max_stop_accel, max_limit]
+        else:
+          accel_limits = [A_CRUISE_MIN, max_limit] if self.CP.radarUnavailable else [min_limit, max_limit]
         # recalculate limit turn according to the new min, max
         accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
       else:
