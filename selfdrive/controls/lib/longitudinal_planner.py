@@ -112,9 +112,14 @@ class LongitudinalPlanner:
     self.is_turning = False
     self.turn_score = 0.0
     self.turn_enable = False
+    self.enhance_traffic = True
+    self.dis_enhance_red_light = True
 
   def read_param(self):
     try:
+      self.enhance_traffic = self.params.get_bool("EnhanceTrafficLight")
+      self.turn_enable = self.params.get_bool("DisEnhTrafficLightTurn")
+      self.dis_enhance_red_light = self.params.get_bool("DisEnhanceTrafficRedLight")
       self.dynamic_experimental_controller.set_enabled(self.params.get_bool("DynamicExperimentalControl"))
     except AttributeError:
       self.dynamic_experimental_controller = DynamicExperimentalController()
@@ -211,6 +216,9 @@ class LongitudinalPlanner:
 
     self.disable_carrot = False
     car_state = sm['carState']
+
+    if not self.enhance_traffic: #未开启红绿灯增强功能
+      self.disable_carrot = True
     if not car_state.cruiseState.enabled:
       self.disable_carrot = True
 
@@ -234,7 +242,12 @@ class LongitudinalPlanner:
     # carrot
     calib_v_cruise = True
     if not self.disable_carrot:  # 没有禁用carrot时
-      if not carrot.blended_request:  # 无blended请求时
+      if not self.dis_enhance_red_light:  # 红绿停车后不退出增强功能
+        v_cruise = carrot.update(sm, v_cruise_kph, False)
+        calib_v_cruise = False
+        self.mpc.mode = carrot.mode
+        carrot.enable = True
+      elif not carrot.blended_request:  # 无blended请求时
         v_cruise = carrot.update(sm, v_cruise_kph, False)
         calib_v_cruise = False
         if not carrot.blended_request:
