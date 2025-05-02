@@ -10,7 +10,7 @@ from openpilot.selfdrive.controls.lib.events import Events
 
 #EventName = log.OnroadEvent.EventName
 LaneChangeState = log.LaneChangeState
-STANDSTILL_COUNT = 1.0 #车辆静止倒计时
+STANDSTILL_COUNT = 2.0 #车辆静止倒计时
 
 class XState(Enum):
   lead = 0
@@ -123,6 +123,15 @@ class CarrotPlanner:
   def _params_update(self):
     self.frame += 1
     self.params_count += 1
+    if self.params_count % 100 == 0:
+      try:
+        val = self.params.get("StopDistance")
+        self.stop_distance = float(val)/10 if val is not None and val != b'' else 6.0
+        val = self.params.get("ComfortBrake")
+        self.comfortBrake = float(val) / 10 if val is not None and val != b'' else 2.4
+      except AttributeError:
+        self.stop_distance = 6.0
+        self.comfortBrake = 2.4
 
   # meta.desireState 是什么？
   # meta.desireState 是一个长度为8的数组，表示 E2E 模型预测的各种“驾驶意图”的概率分布。
