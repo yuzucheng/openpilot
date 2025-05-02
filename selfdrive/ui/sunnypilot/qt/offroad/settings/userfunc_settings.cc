@@ -326,13 +326,8 @@ void StartAccel::refresh() {
   bool ok;
   int int_value = option.toInt(&ok);
   if (ok) {
-    if(int_value > 0){
-      double real_value = int_value / 10.0;  // 假设是除以10
-      setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
-    }
-    else{
-      setLabel(tr("Auto"));
-    }
+    double real_value = int_value / 10.0;  // 假设是除以10
+    setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
   } else {
     setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
   }
@@ -354,13 +349,8 @@ void StopAccel::refresh() {
   bool ok;
   int int_value = option.toInt(&ok);
   if (ok) {
-    if(int_value > 0){
-      double real_value = int_value / 10.0;  // 假设是除以10
-      setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
-    }
-    else{
-      setLabel(tr("Auto"));
-    }
+    double real_value = int_value / 10.0;  // 假设是除以10
+    setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
   } else {
     setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
   }
