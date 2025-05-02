@@ -130,6 +130,7 @@ def manager_init() -> None:
     ("StopDistance", "60"),
     ("ComfortBrake", "24"),
     ("StartAccel", "6"),
+    ("StopAccel", "-20"),
     ("vEgoStopping", "5"),
     ("EnhanceTrafficLight", "1"),
     ("CruiseSmooth", "1"),

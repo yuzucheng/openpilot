@@ -96,6 +96,11 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   connect(start_accel, &OptionControlSP::updateLabels, start_accel, &StartAccel::refresh);
   list->addItem(start_accel);
 
+  list->addItem(new LabelControlSP(tr("Stop Accel")));
+  stop_accel = new StopAccel();
+  connect(stop_accel, &OptionControlSP::updateLabels, stop_accel, &StopAccel::refresh);
+  list->addItem(stop_accel);
+
   list->addItem(new LabelControlSP(tr("vEgoStopping")));
   vego_stopping = new vEgoStopping();
   connect(vego_stopping, &OptionControlSP::updateLabels, vego_stopping, &vEgoStopping::refresh);
@@ -318,6 +323,34 @@ StartAccel::StartAccel() : OptionControlSP(
 
 void StartAccel::refresh() {
   QString option = QString::fromStdString(params.get("StartAccel"));
+  bool ok;
+  int int_value = option.toInt(&ok);
+  if (ok) {
+    if(int_value > 0){
+      double real_value = int_value / 10.0;  // 假设是除以10
+      setLabel(QString::number(real_value, 'f', 1)+ " m/s^2");  // 保留1位小数
+    }
+    else{
+      setLabel(tr("Auto"));
+    }
+  } else {
+    setLabel(option+ " m/s^2");  // 如果转换失败，直接显示原值
+  }
+}
+
+StopAccel::StopAccel() : OptionControlSP(
+  "StopAccel",
+  "",
+  tr("StopAccel"),
+  "../assets/offroad/icon_blank.png",
+  {-40, 0},
+  1) {
+
+  refresh();
+}
+
+void StopAccel::refresh() {
+  QString option = QString::fromStdString(params.get("StopAccel"));
   bool ok;
   int int_value = option.toInt(&ok);
   if (ok) {

@@ -2794,15 +2794,19 @@ Reboot Required.</source>
     </message>
     <message>
         <source>Comfort Brake</source>
-        <translation>刹车减速度(推荐2.4)</translation>
+        <translation>刹车舒适度(推荐2.4)</translation>
     </message>
     <message>
         <source>ComfortBrake</source>
-        <translation>刹车减速度(推荐2.4)</translation>
+        <translation>刹车舒适度(推荐2.4)</translation>
     </message>
     <message>
         <source>Start Accel</source>
         <translation>起步加速度(推荐0.6,非立即生效)</translation>
+    </message>
+    <message>
+        <source>Stop Accel</source>
+        <translation>停车减速度(推荐-2.0,非立即生效)</translation>
     </message>
     <message>
         <source>vEgoStopping</source>

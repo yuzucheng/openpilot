@@ -76,6 +76,16 @@ private:
   Params params;
 };
 
+class StopAccel : public OptionControlSP {
+  Q_OBJECT
+
+public:
+  StopAccel();
+  void refresh();
+private:
+  Params params;
+};
+
 class vEgoStopping : public OptionControlSP {
   Q_OBJECT
 
@@ -138,6 +148,7 @@ private:
   StopDistance *stop_distance;
   ComfortBrake *comfort_break;
   StartAccel *start_accel;
+  StopAccel *stop_accel;
   vEgoStopping *vego_stopping;
 
   ExperimentalModeAngle *experimental_mode_angle;
