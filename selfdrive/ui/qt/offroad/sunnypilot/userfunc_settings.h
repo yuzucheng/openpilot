@@ -146,6 +146,7 @@ public:
 
 public slots:
   void updateToggles();
+  void updateToggles(const QString &param_name, const QString &param_value);
 
 private:
   QStackedLayout* main_layout = nullptr;
@@ -169,4 +170,11 @@ private:
   TurnSteepNess *turn_steep_ness;
   TurnLatAccel *turn_lat_acc;
   TurnMaxFactor *turn_max_factor;
+
+  LabelControl *label_turn_steep_ness;
+  LabelControl *label_turn_lat_accel;
+  LabelControl *label_turn_max_factor;
+
+  LabelControl *label_experimental_angle_and_speed;
+  LabelControl *label_experimental_speed;
 };

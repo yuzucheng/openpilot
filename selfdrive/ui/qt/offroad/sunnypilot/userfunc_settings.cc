@@ -18,23 +18,53 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(toggle_vc);
   toggles["TurnVisionCruise"] = toggle_vc;
 
-  list->addItem(new LabelControl(tr("Turn Steep Ness")));
+  //list->addItem(new LabelControl(tr("Turn Steep Ness")));
+  label_turn_steep_ness = new LabelControl(tr("Turn Steep Ness"));
+  list->addItem(label_turn_steep_ness);
 
   turn_steep_ness = new TurnSteepNess();
   connect(turn_steep_ness, &SPOptionControl::updateLabels, turn_steep_ness, &TurnSteepNess::refresh);
   list->addItem(turn_steep_ness);
 
-  list->addItem(new LabelControl(tr("Turn Lat Accel")));
+  //list->addItem(new LabelControl(tr("Turn Lat Accel")));
+  label_turn_lat_accel = new LabelControl(tr("Turn Lat Accel"));
+  list->addItem(label_turn_lat_accel);
 
   turn_lat_acc = new TurnLatAccel();
   connect(turn_lat_acc, &SPOptionControl::updateLabels, turn_lat_acc, &TurnLatAccel::refresh);
   list->addItem(turn_lat_acc);
 
-  list->addItem(new LabelControl(tr("Turn max factor")));
+  //list->addItem(new LabelControl(tr("Turn max factor")));
+  label_turn_max_factor = new LabelControl(tr("Turn max factor"));
+  list->addItem(label_turn_max_factor);
 
   turn_max_factor = new TurnMaxFactor();
   connect(turn_max_factor, &SPOptionControl::updateLabels, turn_max_factor, &TurnMaxFactor::refresh);
   list->addItem(turn_max_factor);
+
+  //控制控件的显示
+  connect(toggles["TurnVisionCruise"], &ToggleControl::toggleFlipped, [=](bool state) {
+    label_turn_steep_ness->setVisible(state);
+    label_turn_lat_accel->setVisible(state);
+    label_turn_max_factor->setVisible(state);
+
+    turn_steep_ness->setEnabled(state);
+    turn_steep_ness->setVisible(state);
+    turn_lat_acc->setEnabled(state);
+    turn_lat_acc->setVisible(state);
+    turn_max_factor->setEnabled(state);
+    turn_max_factor->setVisible(state);
+  });
+  label_turn_steep_ness->setVisible(toggles["TurnVisionCruise"]->isToggled());
+  label_turn_lat_accel->setVisible(toggles["TurnVisionCruise"]->isToggled());
+  label_turn_max_factor->setVisible(toggles["TurnVisionCruise"]->isToggled());
+
+  turn_steep_ness->setEnabled(toggles["TurnVisionCruise"]->isToggled());
+  turn_steep_ness->setVisible(toggles["TurnVisionCruise"]->isToggled());
+  turn_lat_acc->setEnabled(toggles["TurnVisionCruise"]->isToggled());
+  turn_lat_acc->setVisible(toggles["TurnVisionCruise"]->isToggled());
+  turn_max_factor->setEnabled(toggles["TurnVisionCruise"]->isToggled());
+  turn_max_factor->setVisible(toggles["TurnVisionCruise"]->isToggled());
 
   auto toggle_sc = new ParamControl(
     "SteerCruiseTune",
@@ -181,7 +211,9 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(cond_experi_mode);
   toggles["ConditionExperimentalMode"] = cond_experi_mode;
 
-  list->addItem(new LabelControl(tr("Experimental SteerAngle And Speed Setting")));
+  //list->addItem(new LabelControl(tr("Experimental SteerAngle And Speed Setting")));
+  label_experimental_angle_and_speed = new LabelControl(tr("Experimental SteerAngle And Speed Setting"));
+  list->addItem(label_experimental_angle_and_speed);
 
   experimental_mode_angle = new ExperimentalModeAngle();
   connect(experimental_mode_angle, &SPOptionControl::updateLabels, experimental_mode_angle, &ExperimentalModeAngle::refresh);
@@ -191,13 +223,38 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   connect(experimental_mode_and_speed, &SPOptionControl::updateLabels, experimental_mode_and_speed, &ExperimentalModeAndSpeed::refresh);
   list->addItem(experimental_mode_and_speed);
 
-  list->addItem(new LabelControl(tr("Experimental Speed Setting")));
+  //list->addItem(new LabelControl(tr("Experimental Speed Setting")));
+  label_experimental_speed = new LabelControl(tr("Experimental Speed Setting"));
+  list->addItem(label_experimental_speed);
 
   experimental_mode_speed = new ExperimentalModeSpeed();
   connect(experimental_mode_speed, &SPOptionControl::updateLabels, experimental_mode_speed, &ExperimentalModeSpeed::refresh);
   list->addItem(experimental_mode_speed);
 
+  //控制控件的显示
+  connect(toggles["ConditionExperimentalMode"], &ToggleControl::toggleFlipped, [=](bool state) {
+    label_experimental_angle_and_speed->setVisible(state);
+    label_experimental_speed->setVisible(state);
+
+    experimental_mode_angle->setEnabled(state);
+    experimental_mode_angle->setVisible(state);
+    experimental_mode_and_speed->setEnabled(state);
+    experimental_mode_and_speed->setVisible(state);
+    experimental_mode_speed->setEnabled(state);
+    experimental_mode_speed->setVisible(state);
+  });
+  label_experimental_angle_and_speed->setVisible(toggles["ConditionExperimentalMode"]->isToggled());
+  label_experimental_speed->setVisible(toggles["ConditionExperimentalMode"]->isToggled());
+
+  experimental_mode_angle->setEnabled(toggles["ConditionExperimentalMode"]->isToggled());
+  experimental_mode_angle->setVisible(toggles["ConditionExperimentalMode"]->isToggled());
+  experimental_mode_and_speed->setEnabled(toggles["ConditionExperimentalMode"]->isToggled());
+  experimental_mode_and_speed->setVisible(toggles["ConditionExperimentalMode"]->isToggled());
+  experimental_mode_speed->setEnabled(toggles["ConditionExperimentalMode"]->isToggled());
+  experimental_mode_speed->setVisible(toggles["ConditionExperimentalMode"]->isToggled());
+
   list->addItem(horizontal_line());
+  //========================================================================
 
   param_watcher = new ParamWatcher(this);
   QObject::connect(param_watcher, &ParamWatcher::paramChanged, [=](const QString &param_name, const QString &param_value) {
@@ -222,6 +279,13 @@ void UserFuncPanel::showEvent(QShowEvent *event) {
 void UserFuncPanel::hideEvent(QHideEvent *event) {
   main_layout->setCurrentWidget(userScreen);
 }
+
+void UserFuncPanel::updateToggles(const QString &param_name, const QString &param_value) {
+  if (!isVisible()) return;
+
+
+}
+
 
 void UserFuncPanel::updateToggles() {
 
