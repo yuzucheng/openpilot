@@ -128,7 +128,7 @@ def manager_init() -> None:
     ("TurnVisionCruise", "0"),
     ("SteerCruiseTune", "1"),
     ("StopDistance", "60"),
-    ("ComfortBrake", "24"),
+    ("ComfortBrake", "22"),
     ("MaxStopAccel", "0"),
     ("StartAccel", "6"),
     ("StopAccel", "0"),
