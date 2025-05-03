@@ -59,6 +59,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(horizontal_line()); // 添加分割线
 
   //============================================================
+  /*
   list->addItem(new LabelControl(tr("Cruise Configuration")));
 
   auto toggle_auto_cruise = new ParamControl(
@@ -78,6 +79,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(cruise_on_distance);
 
   list->addItem(horizontal_line()); // 添加分割线
+  */
 
   //============================================================
   list->addItem(new LabelControl(tr("Stop Distance")));
