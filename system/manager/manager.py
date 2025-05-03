@@ -131,7 +131,7 @@ def manager_init() -> None:
     ("ComfortBrake", "24"),
     ("MaxStopAccel", "0"),
     ("StartAccel", "6"),
-    ("StopAccel", "-20"),
+    ("StopAccel", "0"),
     ("vEgoStopping", "5"),
     ("EnhanceTrafficLight", "1"),
     ("CruiseSmooth", "1"),

@@ -2810,7 +2810,7 @@ Reboot Required.</source>
     </message>
     <message>
         <source>Stop Accel</source>
-        <translation>停车减速度(推荐-2.0,非立即生效)</translation>
+        <translation>最大停车减速度(推荐-2.0,非立即生效)</translation>
     </message>
     <message>
         <source>vEgoStopping</source>

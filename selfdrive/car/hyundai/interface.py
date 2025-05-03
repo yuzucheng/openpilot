@@ -125,7 +125,7 @@ class CarInterface(CarInterfaceBase):
     except AttributeError:
       startAccel = 0
       vEgoStopping = 0.5
-      stopAccel = -2.0
+      stopAccel = 0.
 
     ret.vEgoStopping = vEgoStopping
     ret.startAccel = startAccel
