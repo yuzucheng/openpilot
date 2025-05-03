@@ -117,11 +117,16 @@ class CarInterface(CarInterfaceBase):
       vEgoStopping = float(val)/10 if val is not None and val != b'' else 0.5
       val = Params().get("StartAccel")
       startAccel = float(val) / 10 if val is not None and val != b'' else 0
+      val = Params().get("StopAccel")
+      stopAccel = float(val) / 10 if val is not None and val != b'' else 0
     except AttributeError:
       startAccel = 0
       vEgoStopping = 0.5
+      stopAccel = 0.
 
     ret.vEgoStopping = vEgoStopping
+    if stopAccel <= -0.1:
+      ret.stopAccel = stopAccel
 
     val = Params().get("AccelPersonality")
     if val is not None:

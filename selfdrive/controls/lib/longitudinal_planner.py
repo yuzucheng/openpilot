@@ -117,6 +117,7 @@ class LongitudinalPlanner:
     self.dis_enhance_red_light = True
     val = self.params.get("AccelPersonality")
     self.accel_personality = int(val) if val and val.isdigit() else AccelPersonality.stock
+    self.max_stop_accel = 0.
 
   def read_param(self):
     self.enhance_traffic = self.params.get_bool("EnhanceTrafficLight")
@@ -128,6 +129,12 @@ class LongitudinalPlanner:
       self.dynamic_experimental_controller.set_enabled(self.params.get_bool("DynamicExperimentalControl"))
     except AttributeError:
       self.dynamic_experimental_controller = DynamicExperimentalController()
+
+    try:
+      val = self.params.get("MaxStopAccel")
+      self.max_stop_accel = float(val)/10 if val is not None and val != b'' else 0.
+    except AttributeError:
+      self.max_stop_accel = 0
 
   @staticmethod
   def parse_model(model_msg, model_error):
@@ -299,7 +306,10 @@ class LongitudinalPlanner:
     # 获取加速度限制
     accel_personality = self.accel_personality
     max_accel = get_max_accel(v_ego, accel_personality)
-    accel_limits = [A_CRUISE_MIN, max_accel]
+    if self.max_stop_accel <= -0.1:  # new
+      accel_limits = [self.max_stop_accel, max_accel]
+    else:
+      accel_limits = [A_CRUISE_MIN, max_accel]
     accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
 
     #if self.mpc.mode == 'acc':
