@@ -58,6 +58,9 @@ class AccelController:
     a_cruise_min = interp(v_ego, _DP_CRUISE_MIN_BP, min_v)
     a_cruise_max = interp(v_ego, _DP_CRUISE_MAX_BP, max_v)
 
+    #new 最小减速度固定为-3.0
+    a_cruise_min = -3.0
+
     return a_cruise_min, a_cruise_max
 
   def get_accel_limits(self, v_ego: float, accel_limits: list[float]) -> tuple[float, float]:
