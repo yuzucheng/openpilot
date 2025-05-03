@@ -59,6 +59,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(horizontal_line()); // 添加分割线
 
   //============================================================
+  /*
   list->addItem(new LabelControlSP(tr("Cruise Configuration")));
 
   auto toggle_auto_cruise = new ParamControlSP(
@@ -78,6 +79,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(cruise_on_distance);
 
   list->addItem(horizontal_line()); // 添加分割线
+  */
 
   //============================================================
   list->addItem(new LabelControlSP(tr("Stop Distance")));
@@ -134,6 +136,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   list->addItem(toggle_red_light_dis_enh_func);
   toggles["DisEnhanceTrafficRedLight"] = toggle_red_light_dis_enh_func;
 
+  /*
   auto cruise_smooth = new ParamControlSP(
     "CruiseSmooth",
     tr("Cruise Smooth"),
@@ -163,6 +166,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   );
   list->addItem(accel_smooth);
   toggles["AccelSmooth"] = accel_smooth;
+  */
 
   list->addItem(horizontal_line());
 
