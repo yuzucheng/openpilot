@@ -270,6 +270,13 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   main_layout->addWidget(userScreen);
 
   main_layout->setCurrentWidget(userScreen);
+
+  // trigger offroadTransition when going onroad/offroad
+  connect(uiState(), &UIState::offroadTransition, [=](bool offroad) {
+    start_accel->setEnabled(offroad);
+    stop_accel->setEnabled(offroad);
+    vego_stopping->setEnabled(offroad);
+  });
 }
 
 void UserFuncPanel::showEvent(QShowEvent *event) {
