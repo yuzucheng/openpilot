@@ -124,6 +124,7 @@ def manager_init() -> None:
     ("LastSunnylinkPingTime", "0"),
     ("EnableGitlabRunner", "0"),
     ("EnableSunnylinkUploader", "0"),
+    ("HkgCustomLongTuning", "1"),
 
     ("TurnVisionCruise", "0"),
     ("SteerCruiseTune", "1"),
