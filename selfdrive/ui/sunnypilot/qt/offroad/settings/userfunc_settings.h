@@ -169,4 +169,11 @@ private:
   TurnSteepNess *turn_steep_ness;
   TurnLatAccel *turn_lat_acc;
   TurnMaxFactor *turn_max_factor;
+
+  LabelControlSP *label_turn_steep_ness;
+  LabelControlSP *label_turn_lat_accel;
+  LabelControlSP *label_turn_max_factor;
+
+  LabelControlSP *label_experimental_angle_and_speed;
+  LabelControlSP *label_experimental_speed;
 };
