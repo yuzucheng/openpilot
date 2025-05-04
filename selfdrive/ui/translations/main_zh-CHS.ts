@@ -2806,15 +2806,15 @@ Reboot Required.</source>
     </message>
     <message>
         <source>Start Accel</source>
-        <translation>起步加速度(推荐0.6,非立即生效)</translation>
+        <translation>起步加速度(推荐0.6,下线后可设置)</translation>
     </message>
     <message>
         <source>Stop Accel</source>
-        <translation>最大停车减速度(推荐-2.0,非立即生效)</translation>
+        <translation>最大停车减速度(推荐-2.0,下线后可设置)</translation>
     </message>
     <message>
         <source>vEgoStopping</source>
-        <translation>停车速度(推荐0.5,非立即生效)</translation>
+        <translation>停车速度(推荐0.5,下线后可设置)</translation>
     </message>
     <message>
         <source>Auto</source>
