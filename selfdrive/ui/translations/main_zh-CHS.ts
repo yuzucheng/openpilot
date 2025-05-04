@@ -2101,7 +2101,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Back Up</source>
-        <translation>后退</translation>
+        <translation>备份</translation>
     </message>
     <message>
         <source>Enable sunnylink</source>
