@@ -109,6 +109,10 @@ class LongControl:
         output_accel -= self.CP.stoppingDecelRate * DT_CTRL
       self.reset(CS.vEgo)
 
+      # 停车柔和化：低速时限制减速度，防止最后一脚猛刹
+      if CS.vEgo < 1.0:
+        output_accel = max(output_accel, interp(CS.vEgo, [0.0, 1.0], [-0.2, -1.2]))
+
     elif self.long_control_state == LongCtrlState.starting:
       output_accel = self.CP.startAccel
       self.reset(CS.vEgo)
@@ -130,5 +134,9 @@ class LongControl:
                                      freeze_integrator=freeze_integrator)
 
     self.last_output_accel = clip(output_accel, accel_limits[0], accel_limits[1])
+
+    # 全局再次限制，确保低速刹车不突兀
+    if self.long_control_state == LongCtrlState.stopping and CS.vEgo < 0.5:
+      self.last_output_accel = max(self.last_output_accel, -0.2)
 
     return self.last_output_accel
