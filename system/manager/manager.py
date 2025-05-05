@@ -138,6 +138,7 @@ def manager_init() -> None:
     ("TurnSteepNess", "90"),
     ("TurnLatAccel", "10"),
     ("TurnMaxFactor", "6"),
+    ("DynamicPersonality", "1"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))

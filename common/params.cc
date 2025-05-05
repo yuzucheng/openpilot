@@ -355,6 +355,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"TurnSteepNess", PERSISTENT | BACKUP},
     {"TurnLatAccel", PERSISTENT | BACKUP},
     {"TurnMaxFactor", PERSISTENT | BACKUP},
+    {"DynamicPersonality", PERSISTENT | BACKUP},
 
     {"SunnylinkCache_Users", PERSISTENT},
     {"SunnylinkCache_Roles", PERSISTENT},

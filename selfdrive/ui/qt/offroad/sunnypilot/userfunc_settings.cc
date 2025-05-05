@@ -112,6 +112,17 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   */
 
   //============================================================
+    auto toggle_dp = new ParamControl(
+    "DynamicPersonality",
+    tr("Enable Dynamic Personality"),
+    tr("Enable this to allow sunnypilot to dynamically adjust following distance and reaction based on your \"Driving Personality\" setting. "
+        "Instead of predefined settings for each personality, every personality now adapts dynamically according to your speed and the distance to the lead car."),
+    "../assets/offroad/icon_blank.png",
+    this
+  );
+  list->addItem(toggle_dp);
+  toggles["DynamicPersonality"] = toggle_dp;
+
   list->addItem(new LabelControl(tr("Stop Distance")));
 
   stop_distance = new StopDistance();

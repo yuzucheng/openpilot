@@ -2517,6 +2517,14 @@ This may take up to a minute.</source>
         <translation>自动巡航距离(小于此距离时自动开启巡航功能)</translation>
     </message>
     <message>
+        <source>Enable Dynamic Personality</source>
+        <translation>启用动态跟车</translation>
+    </message>
+    <message>
+        <source>Enable this to allow sunnypilot to dynamically adjust following distance and reaction based on your &quot;Driving Personality&quot; setting. Instead of predefined settings for each personality, every personality now adapts dynamically according to your speed and the distance to the lead car.</source>
+        <translation>启用此功能后，sunnypilot将根据您的“驾驶个性”设置动态调整跟车距离和反应。每种驾驶个性不再使用预定义的设置，而是根据您的速度和与前车的距离动态适应。</translation>
+    </message>
+    <message>
         <source>Stop Distance</source>
         <translation>停车距离(推荐6m)</translation>
     </message>

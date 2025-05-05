@@ -118,8 +118,10 @@ class LongitudinalPlanner:
     val = self.params.get("AccelPersonality")
     self.accel_personality = int(val) if val and val.isdigit() else AccelPersonality.stock
     self.max_stop_accel = 0.
+    self.dynamic_personality = self.params.get_bool("DynamicPersonality")
 
   def read_param(self):
+    self.dynamic_personality = self.params.get_bool("DynamicPersonality")
     self.enhance_traffic = self.params.get_bool("EnhanceTrafficLight")
     self.turn_enable = self.params.get_bool("DisEnhTrafficLightTurn")
     self.dis_enhance_red_light = self.params.get_bool("DisEnhanceTrafficRedLight")
@@ -358,7 +360,7 @@ class LongitudinalPlanner:
     self.mpc.set_weights(prev_accel_constraint, personality=sm['controlsState'].personality)
     self.mpc.set_accel_limits(accel_limits_turns[0], accel_limits_turns[1])
     self.mpc.set_cur_state(self.v_desired_filter.x, self.a_desired)
-    self.mpc.update(carrot, reset_state, sm['radarState'], v_cruise, x, v, a, j, personality=sm['controlsState'].personality)
+    self.mpc.update(carrot, reset_state, sm['radarState'], v_cruise, x, v, a, j, personality=sm['controlsState'].personality, dynamic_personality=self.dynamic_personality)
 
     self.v_desired_trajectory_full = np.interp(ModelConstants.T_IDXS, T_IDXS_MPC, self.mpc.v_solution)
     self.a_desired_trajectory_full = np.interp(ModelConstants.T_IDXS, T_IDXS_MPC, self.mpc.a_solution)
