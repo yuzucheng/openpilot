@@ -112,7 +112,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   */
 
   //============================================================
-  auto toggle_dm = new ParamControl(
+  toggle_dm = new ParamControl(
     "DisableDM",
     tr("Disable DM"),
     tr("Disable driver monitoring"),
@@ -297,6 +297,7 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
     start_accel->setEnabled(offroad);
     stop_accel->setEnabled(offroad);
     vego_stopping->setEnabled(offroad);
+    toggle_dm->setEnabled(offroad);
   });
 }
 
