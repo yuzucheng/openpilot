@@ -2517,6 +2517,14 @@ This may take up to a minute.</source>
         <translation>自动巡航距离(小于此距离时自动开启巡航功能)</translation>
     </message>
     <message>
+        <source>Disable DM</source>
+        <translation>关闭驾驶员监控</translation>
+    </message>
+    <message>
+        <source>Disable driver monitoring</source>
+        <translation>关闭驾驶员监控，适合C3Lite</translation>
+    </message>
+    <message>
         <source>Enable Dynamic Personality</source>
         <translation>启用动态跟车</translation>
     </message>

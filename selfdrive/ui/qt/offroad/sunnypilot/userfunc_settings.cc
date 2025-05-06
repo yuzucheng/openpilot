@@ -112,7 +112,17 @@ UserFuncPanel::UserFuncPanel(QWidget *parent) : QFrame(parent) {
   */
 
   //============================================================
-    auto toggle_dp = new ParamControl(
+  auto toggle_dm = new ParamControl(
+    "DisableDM",
+    tr("Disable DM"),
+    tr("Disable driver monitoring"),
+    "../assets/offroad/icon_blank.png",
+    this
+  );
+  list->addItem(toggle_dm);
+  toggles["DisableDM"] = toggle_dm;
+
+  auto toggle_dp = new ParamControl(
     "DynamicPersonality",
     tr("Enable Dynamic Personality"),
     tr("Enable this to allow sunnypilot to dynamically adjust following distance and reaction based on your \"Driving Personality\" setting. "
