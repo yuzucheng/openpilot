@@ -2518,7 +2518,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>Disable DM</source>
-        <translation>关闭驾驶员监控</translation>
+        <translation>关闭驾驶员监控(重启后生效)</translation>
     </message>
     <message>
         <source>Disable driver monitoring</source>
