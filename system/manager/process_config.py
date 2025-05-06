@@ -57,10 +57,10 @@ procs = [
   PythonProcess("micd", "system.micd", iscar),
   PythonProcess("timed", "system.timed", always_run, enabled=not PC),
 
-  PythonProcess("dmonitoringmodeld", "selfdrive.modeld.dmonitoringmodeld", driverview, enabled=(not PC or WEBCAM)),
+  #PythonProcess("dmonitoringmodeld", "selfdrive.modeld.dmonitoringmodeld", driverview, enabled=(not PC or WEBCAM)),
   NativeProcess("encoderd", "system/loggerd", ["./encoderd"], only_onroad),
   NativeProcess("stream_encoderd", "system/loggerd", ["./encoderd", "--stream"], notcar),
-  NativeProcess("loggerd", "system/loggerd", ["./loggerd"], logging),
+  #NativeProcess("loggerd", "system/loggerd", ["./loggerd"], logging),
   NativeProcess("modeld", "selfdrive/modeld", ["./modeld"], only_onroad),
   NativeProcess("mapsd", "selfdrive/navd", ["./mapsd"], model_use_nav),
   PythonProcess("navmodeld", "selfdrive.modeld.navmodeld", model_use_nav),
@@ -74,7 +74,7 @@ procs = [
   PythonProcess("controlsd", "selfdrive.controls.controlsd", only_onroad),
   PythonProcess("card", "selfdrive.car.card", only_onroad),
   PythonProcess("deleter", "system.loggerd.deleter", always_run),
-  PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", driverview, enabled=(not PC or WEBCAM)),
+  #PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", driverview, enabled=(not PC or WEBCAM)),
   PythonProcess("qcomgpsd", "system.qcomgpsd.qcomgpsd", qcomgps, enabled=TICI),
   #PythonProcess("ugpsd", "system.ugpsd", only_onroad, enabled=TICI),
   PythonProcess("navd", "selfdrive.navd.navd", only_onroad),
@@ -119,6 +119,13 @@ if os.path.exists("./gitlab_runner.sh") and not PC:
   procs += [
     NativeProcess("gitlab_runner_start", "system/manager", ["./gitlab_runner.sh", "start"], only_offroad, sigkill=False),
     NativeProcess("gitlab_runner_stop", "system/manager", ["./gitlab_runner.sh", "stop"], only_onroad, sigkill=False)
+  ]
+
+if not Params().get_bool("DisableDM"):
+  procs += [
+    PythonProcess("dmonitoringmodeld", "selfdrive.modeld.dmonitoringmodeld", driverview, enabled=(not PC or WEBCAM)),
+    PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", driverview, enabled=(not PC or WEBCAM)),
+    NativeProcess("loggerd", "system/loggerd", ["./loggerd"], logging)
   ]
 
 managed_processes = {p.name: p for p in procs}
