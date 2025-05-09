@@ -34,7 +34,7 @@ class ModelCapabilities(IntFlag):
       return ModelCapabilities.Default | ModelCapabilities.DesiredCurvatureV1 | ModelCapabilities.NoO
     elif gen == 3:
       return ModelCapabilities.Default | ModelCapabilities.DesiredCurvatureV2 | ModelCapabilities.NoO
-    elif gen == 4:
+    elif gen >= 4:
       return ModelCapabilities.Default | ModelCapabilities.DesiredCurvatureV2
     else:
       # Default model is meant to represent the capabilities of the prebuilt model.
