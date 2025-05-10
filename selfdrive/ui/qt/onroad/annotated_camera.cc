@@ -1379,32 +1379,67 @@ void AnnotatedCameraWidget::drawLaneLines(QPainter &painter, const UIState *s) {
     } else if (!(latActive || car_state.getCruiseState().getEnabled())) {
       bg.setColorAt(0, whiteColor());
       bg.setColorAt(1, whiteColor(0));
-    } else if (sm["controlsState"].getControlsState().getExperimentalMode()) {
-      // The first half of track_vertices are the points for the right side of the path
-      // and the indices match the positions of accel from uiPlan
-      const auto &acceleration = sm["uiPlan"].getUiPlan().getAccel();
-      const int max_len = std::min<int>(scene.track_vertices.length() / 2, acceleration.size());
+    } // 如果当前处于实验模式（Experimental Mode）
+else if (sm["controlsState"].getControlsState().getExperimentalMode()) {
+    // 获取加速度数据
+    const auto &acceleration = sm["uiPlan"].getUiPlan().getAccel();
+    // 获取可用的绘制点数量，不能超过 track_vertices 数组长度的一半和加速度数组长度中较小的那个
+    const int max_len = std::min<int>(scene.track_vertices.length() / 2, acceleration.size());
 
-      for (int i = 0; i < max_len; ++i) {
-        // Some points are out of frame
+    // 遍历每一个轨迹点
+    for (int i = 0; i < max_len; ++i) {
+        // 如果 y 坐标超出可视区域，则跳过
         if (scene.track_vertices[i].y() < 0 || scene.track_vertices[i].y() > height()) continue;
 
-        // Flip so 0 is bottom of frame
-        float lin_grad_point = (height() - scene.track_vertices[i].y()) / height();
+        // 计算该点在背景上的相对垂直位置（y方向位置），用于 setColorAt
+        const float y_pos = (height() - scene.track_vertices[i].y()) / height();
+        // 将加速度限制在 -1.5 到 1.5 之间
+        const float accel = std::clamp(acceleration[i], -1.5f, 1.5f);
 
-        // speed up: 120, slow down: 0
-        float path_hue = fmax(fmin(60 + acceleration[i] * 35, 120), 0);
-        // FIXME: painter.drawPolygon can be slow if hue is not rounded
-        path_hue = int(path_hue * 100 + 0.5) / 100;
+        float hue = 0.0f;
+        // 根据加速度值设置色调（Hue）
+        if (accel < 0) {
+            // 减速时色调从 0 到 90（红到黄）
+            hue = 90.0f * (1.0f + accel / 1.5f); 
+        } else {
+            // 加速时色调从 90 到 140（黄到绿）
+            hue = 90.0f + (50.0f * (accel / 1.5f));
+        }
 
-        float saturation = fmin(fabs(acceleration[i] * 1.5), 1);
-        float lightness = util::map_val(saturation, 0.0f, 1.0f, 0.95f, 0.62f);  // lighter when grey
-        float alpha = util::map_val(lin_grad_point, 0.75f / 2.f, 0.75f, 0.4f, 0.0f);  // matches previous alpha fade
-        bg.setColorAt(lin_grad_point, QColor::fromHslF(path_hue / 360., saturation, lightness, alpha));
+        // 对于轻微减速，进行更细致的色调插值（70 ~ 90）
+        if (accel >= -0.5f && accel < 0) {
+            hue = util::map_val(accel, -0.5f, 0.0f, 70.0f, 90.0f);
+        } 
+        // 对于轻微加速，色调在 90 ~ 116 之间变化
+        else if (accel >= 0 && accel < 0.5f) {
+            hue = util::map_val(accel, 0.0f, 0.5f, 90.0f, 116.0f);
+        }
 
-        // Skip a point, unless next is last
+        float alpha = 0.5f; // 默认透明度
+        // 强减速时，提高透明度（越强越明显）
+        if (accel < -0.5f) {
+            alpha = util::map_val(accel, -1.5f, -0.5f, 0.8f, 0.5f);
+        } 
+        // 轻微加减速时保持 0.5
+        else if (accel < 0.5f) {
+            alpha = 0.5f;
+        } 
+        // 强加速时，增强透明度
+        else {
+            alpha = util::map_val(accel, 0.5f, 1.5f, 0.7f, 0.9f);
+        }
+
+        // 设置该垂直位置上的颜色，HSL 模式，其中亮度恒定为 0.6，饱和度根据加速度轻微降低
+        bg.setColorAt(y_pos, QColor::fromHslF(
+            std::round(hue) / 360.0f,                    // 色调：转换成 0~1 区间
+            1.0f - (0.1f * std::abs(accel)),             // 饱和度：加减速越大越低
+            0.6f,                                        // 亮度固定
+            std::clamp(alpha, 0.3f, 0.9f)                // 透明度限制范围
+        ));
+
+        // 跳过部分点以减少渲染负载（仅跳过中间段）
         i += (i + 2) < max_len ? 1 : 0;
-      }
+    }
 
     } else {
       bg.setColorAt(0.0, QColor::fromHslF(148 / 360., 0.94, 0.51, 0.4));
