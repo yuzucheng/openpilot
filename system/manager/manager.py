@@ -143,7 +143,7 @@ def manager_init() -> None:
     ("AChangeCost", "250"),
     ("AChangeCostStart", "100"),
     ("JEgoCost", "50"),
-    ("NewLaneColor", "0"),
+    ("NewLaneColor", "1"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
